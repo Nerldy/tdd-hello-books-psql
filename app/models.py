@@ -97,7 +97,10 @@ class User(db.Model):
 		try:
 			# set up a payload with an expiration time
 			payload = {
-				'exp': datetime.utcnow() + timedelta(minutes=30),
+				'exp': datetime.utcnow() + timedelta(
+					days=app.config.get('AUTH_TOKEN_EXPIRY_DAYS'),
+					seconds=app.config.get('AUTH_TOKEN_EXPIRY_SECONDS')
+				),
 				'iat': datetime.utcnow(),
 				'sub': user_id
 			}
@@ -119,7 +122,7 @@ class User(db.Model):
 		"""Decodes the access token from the Authorization header."""
 		try:
 			# try to decode the token using our SECRET variable
-			payload = jwt.decode(token, current_app.config.get('SECRET'), algorithms='HS256')
+			payload = jwt.decode(token, str(app.config['SECRET_KEY']), algorithms='HS256')
 			return payload['sub']
 		except jwt.ExpiredSignatureError:
 			# the token is expired, return an error string
@@ -152,6 +155,7 @@ class User(db.Model):
 class BlacklistToken(db.Model):
 	"""table stores invalid tokens"""
 
+	__tablename__ = 'black_list_tokens'
 	id = db.Column(db.Integer, primary_key=True)
 	token = db.Column(db.String, unique=True, nullable=False)
 	blacklisted_on = db.Column(db.DateTime, nullable=False, default=datetime.now())
