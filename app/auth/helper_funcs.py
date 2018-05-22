@@ -33,7 +33,7 @@ def token_required(f):
 			})), 401
 
 		try:
-			decode_response = User.decode_auth_token(token)
+			decode_response = User.decode_token(token)
 			current_user = User.query.filter_by(id=decode_response).first()
 		except:
 			message = 'Invalid token'
