@@ -4,6 +4,7 @@ from app.models import User, Book, BlacklistToken
 from app.auth.helper_funcs import response, response_auth, token_required, format_inputs
 from sqlalchemy import exc
 from cerberus import Validator
+from app import db
 
 auth = Blueprint('auth', __name__)
 
@@ -59,6 +60,7 @@ class RegisterUser(MethodView):
 		"""register user, add them to the database"""
 
 		if request.content_type == 'application/json':
+			request.json['username'] = format_inputs(request.json.get('username'))
 			post_data = request.get_json()
 
 			if validate_user_schema.validate(post_data):
@@ -88,8 +90,54 @@ class RegisterUser(MethodView):
 		return response('error', 'content-type must be json format', 400)
 
 
+class LoginUser(MethodView):
+	"""class to log in user"""
+
+	def post(self):
+		if request.content_type == 'application/json':
+			post_data = request.get_json()
+
+			if validate_login_schema.validate(post_data):
+				username = post_data.get('username')
+				email = post_data.get('email')
+				password = post_data.get('password')
+
+				user = User.query.filter(db.and_(User.username == username, User.email == email)).first()
+
+				if user and user.verify_password(password):
+					return response_auth('success', 'successfully logged in', user.generate_token(user.id), 200)
+				return response('error', "user doesn't exist or password is incorrect or username and email do not match", 401)
+
+			return response('error', validate_login_schema.errors, 401)
+		return response('error', 'content-type must be json', 202)
+
+
+class LogoutUser(MethodView):
+	"""class to log out user"""
+
+	def post(self):
+		auth_header = request.headers.get('Authorization')
+		if auth_header:
+			try:
+				auth_token = auth_header.split(" ")[1]
+			except IndexError:
+				return response('error', 'provide a valid token', 403)
+			else:
+				decoded_token_response = User.decode_token(auth_token)
+				if not isinstance(decoded_token_response, str):
+					token = BlacklistToken(token=auth_token)
+					token.blacklist()
+					return response('success', 'successfully logged out', 200)
+				return response('error', decoded_token_response, 401)
+		return response('error', 'provide an Authorization header', 403)
+
+
 # register classes as views
 registration_view = RegisterUser.as_view('register')
+login_view = LoginUser.as_view('login')
+logout_view = LogoutUser.as_view('logout')
 
 # end point rules
 auth.add_url_rule('/register', view_func=registration_view, methods=['POST'])
+auth.add_url_rule('/login', view_func=login_view, methods=['POST'])
+auth.add_url_rule('/logout', view_func=logout_view, methods=['POST'])
