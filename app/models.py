@@ -123,6 +123,9 @@ class User(db.Model):
 		try:
 			# try to decode the token using our SECRET variable
 			payload = jwt.decode(token, str(app.config['SECRET_KEY']), algorithms='HS256')
+			is_token_blacklisted = BlacklistToken.check_blacklist(token)
+			if is_token_blacklisted:
+				return 'Token was Blacklisted, Please login In'
 			return payload['sub']
 		except jwt.ExpiredSignatureError:
 			# the token is expired, return an error string
