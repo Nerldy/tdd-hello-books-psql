@@ -39,7 +39,7 @@ user_schema = {
 	'password': {
 		'type': 'string',
 		'required': True,
-		'minlength': 2,
+		'minlength': 8,
 		'regex': '(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'
 
 	},
@@ -49,8 +49,24 @@ user_schema = {
 	}
 }
 
+reset_password_schema = {
+	'old_password': {
+		'type': 'string',
+		'required': True
+
+	},
+	'new_password': {
+
+		'type': 'string',
+		'required': True,
+		'minlength': 8,
+		'regex': '(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'
+	}
+}
+
 validate_user_schema = Validator(user_schema)
 validate_login_schema = Validator(login_schema)
+validate_reset_password_schema = Validator(reset_password_schema)
 
 
 class RegisterUser(MethodView):
@@ -130,6 +146,29 @@ class LogoutUser(MethodView):
 					return response('success', 'successfully logged out', 200)
 				return response('error', decoded_token_response, 401)
 		return response('error', 'provide an Authorization header', 403)
+
+
+@auth.route('/reset-password', methods=['POST'])
+@token_required
+def reset_password(current_user):
+	"""this function resets password"""
+	if request.content_type == 'application/json':
+		data = request.get_json()
+
+		# validate the json data matches the schema
+		if validate_reset_password_schema.validate(data):
+			old_password = data.get('old_password')
+			new_password = data.get('new_password')
+
+			# check if old password match. If they do, update password
+			if current_user.verify_password(old_password):
+				current_user.password = new_password
+				current_user.save()
+				return response('success', 'password reset successful', 200)
+			return response('error', "password don't match", 401)
+
+		return response('error', validate_reset_password_schema.errors, 401)
+	return response('error', 'Content-type must be json', 400)
 
 
 # register classes as views
