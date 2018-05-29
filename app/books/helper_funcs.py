@@ -7,18 +7,19 @@ def check_admin(user):
 	"""
 	Prevent non-admins from accessing the page
 	:return: 403
+	:param user: user
 	"""
 	if not user.is_admin:
 		abort(403)
 
 
 def response_for_book(book):
-	"""returns a single book when requested"""
+	"""returns a single books when requested"""
 	return make_response(
 		jsonify(
 			{
 				'status': 'success',
-				'book': book
+				'books': book
 			}
 		)
 	)
@@ -26,7 +27,7 @@ def response_for_book(book):
 
 def response_for_created_book(book, status_code):
 	"""
-	returns a response when a book has been created
+	returns a response when a books has been created
 	:param book:
 	:param status_code:
 	:return: http response
