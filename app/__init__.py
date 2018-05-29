@@ -44,3 +44,7 @@ from app import views
 from app.auth.views import auth
 
 app.register_blueprint(auth, url_prefix='/api/v2/auth')
+
+from app.books.views import books
+
+app.register_blueprint(books, url_prefix='/api/v2/books')
