@@ -188,9 +188,30 @@ def api_update_book(current_user, book_id):
 			if book_update:
 				book_update.title = title
 				book_update.save()
-
 				return response_for_created_book(book_update, 201)
 			return response('error', f"book with id {book_id} does not exist", 404)
 
 		return response('error', f"Nothing was changed: {validate_update_book_schema.errors}", 400)
 	return response('error', 'Content-type must be json', 202)
+
+
+@books.route('/<book_id>', methods=['DELETE'])
+@token_required
+def api_delete_book(current_user, book_id):
+	"""
+	delete a book
+	:param current_user:
+	:param book_id:
+	:return:
+	"""
+	check_admin(current_user)
+	try:
+		int(book_id)
+	except ValueError:
+		return response('error', 'please provide a book id. ID must be integer', 400)
+	del_book = Book.query.filter(Book.id == book_id).first()
+
+	if not del_book:
+		abort(404)
+	del_book.delete()
+	return response('success', f'book with id {book_id} has been deleted', 200)
