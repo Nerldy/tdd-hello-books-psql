@@ -16,6 +16,8 @@ class Book(db.Model):
 	date_modified = db.Column(
 		db.DateTime, default=db.func.current_timestamp(),
 		onupdate=db.func.current_timestamp())
+	is_borrowed = db.Column(db.Boolean, default=False)
+	borrowed_books = db.relationship('BorrowedBook', backref='books', lazy='dynamic')
 
 	def __init__(self, title, isbn):
 		self.title = title
@@ -47,6 +49,15 @@ class Book(db.Model):
 		return f"<Book {self.title}"
 
 
+class BorrowedBook(db.Model):
+	__tablename__ = 'borrowed_books'
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
+	borrow_date = db.Column(db.DateTime, default=db.func.current_timestamp())
+	return_date = db.Column(db.DateTime)
+
+
 class User(db.Model):
 	"""defines users"""
 	__tablename__ = 'users'
@@ -59,6 +70,7 @@ class User(db.Model):
 	date_modified = db.Column(
 		db.DateTime, default=db.func.current_timestamp(),
 		onupdate=db.func.current_timestamp())
+	borrowed_books = db.relationship('BorrowedBook', backref='users', lazy='dynamic')
 
 	@property
 	def password(self):
