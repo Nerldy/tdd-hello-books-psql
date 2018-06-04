@@ -8,6 +8,104 @@ from app import db
 
 users = Blueprint('users', __name__)
 
+pagination_schema = {
+	'limit': {
+		'type': 'string',
+		'required': True
+	},
+	'page_num': {
+		'type': 'string',
+		'required': True
+	},
+	'returned': {
+		'type': 'string',
+		'required': True
+	}
+}
+
+validate_pagination_schema = Validator(pagination_schema)
+
+
+@users.route('')
+@token_required
+def api_books_not_returned(current_user):
+	"""
+	handles books not returned by user
+	:param current_user:
+	:return:
+	"""
+
+	req_args = request.args
+
+	# check if args exists
+	if req_args:
+		if validate_pagination_schema.validate(req_args) and req_args.get('returned') == 'false':
+			try:
+
+				borrowed_books = BorrowedBook.query.filter(
+					db.and_(
+						BorrowedBook.return_date == None,
+						BorrowedBook.user_id == current_user.id
+					)
+				).all()
+
+				books_list = []
+
+				for single_book in borrowed_books:
+					match_book = Book.query.filter_by(id=single_book.id).first()
+					books_list.append(match_book)
+
+				book_results = get_user_book_list(books_list)
+
+				return make_response(
+					jsonify({
+						"books": book_results
+					})
+				)
+			except Exception as e:
+				return make_response(
+					jsonify(
+						{
+							'error': str(e)
+						}
+					)
+				), 400
+
+		return make_response(jsonify({'error': validate_pagination_schema.errors})), 400
+
+	else:
+		try:
+
+			borrowed_books = BorrowedBook.query.filter(
+				db.and_(
+					BorrowedBook.return_date != None,
+					BorrowedBook.user_id == current_user.id
+				)
+			).all()
+
+			books_list = []
+
+			for single_book in borrowed_books:
+				print(single_book)
+				match_book = Book.query.filter_by(id=single_book.id).first()
+				books_list.append(match_book)
+
+			book_results = get_user_book_list(books_list)
+
+			return make_response(
+				jsonify({
+					"books": book_results
+				})
+			)
+		except Exception as e:
+			return make_response(
+				jsonify(
+					{
+						'error': str(e)
+					}
+				)
+			), 400
+
 
 @users.route('/<book_id>', methods=['POST'])
 @token_required
@@ -18,7 +116,7 @@ def api_borrow_book(current_user, book_id):
 	:param book_id:
 	:return:
 	"""
-	print(book_id)
+
 	try:  # check if book id is integer
 		int(book_id)
 	except ValueError:  # if it's not integer raise an error
