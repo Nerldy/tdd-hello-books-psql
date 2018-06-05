@@ -20,6 +20,11 @@ pagination_schema = {
 	'returned': {
 		'type': 'string',
 		'required': True
+	},
+	'user_id': {
+		'type': 'string',
+		'required': False,
+		'empty': False
 	}
 }
 
@@ -41,13 +46,28 @@ def api_books_not_returned(current_user):
 	if req_args:
 		if validate_pagination_schema.validate(req_args) and req_args.get('returned') == 'false':
 			try:
+				borrowed_books = None
 
-				borrowed_books = BorrowedBook.query.filter(
-					db.and_(
-						BorrowedBook.return_date == None,
-						BorrowedBook.user_id == current_user.id
-					)
-				).all()
+				# if username in args check if it's admin
+				if 'user_id' in req_args:
+					check_admin(current_user)
+
+					user_id = int(req_args.get('user_id'))
+
+					borrowed_books = BorrowedBook.query.filter(
+						db.and_(
+							BorrowedBook.return_date == None,
+							BorrowedBook.user_id == user_id
+						)
+					).all()
+
+				else:
+					borrowed_books = BorrowedBook.query.filter(
+						db.and_(
+							BorrowedBook.return_date == None,
+							BorrowedBook.user_id == current_user.id
+						)
+					).all()
 
 				books_list = []
 
@@ -130,7 +150,7 @@ def api_borrow_book(current_user, book_id):
 
 		# check if book is borrowed
 		if book_instance.is_borrowed:
-			return response('message', f'book with id {book_id} is currently unavailable', 204)
+			return response('message', f'book with id {book_id} is currently unavailable', 400)
 
 		# if book exists user can borrow it
 		borrow_book = BorrowedBook()
