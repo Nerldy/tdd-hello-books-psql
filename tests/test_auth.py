@@ -162,6 +162,85 @@ class TestAuthBlueprint(BaseTestCase):
 			self.assertTrue(logout_again_data['status'] == 'error')
 			self.assertTrue(logout_again_data['message'] == 'Token was Blacklisted, Please login In')
 
+	def test_reset_password(self):
+		"""test api can reset password"""
+		with self.client:
+			login_data = self.register_and_login_in_user()
+			token = login_data['auth_token']
+			res = self.client.post(
+				'/api/v2/auth/reset-password',
+				headers=dict(Authorization=f'Bearer {token}'),
+				content_type='application/json',
+				data=json.dumps(
+					dict(
+						old_password='harderTHAN.Ev37',
+						new_password='newPassword##popa985'
+					)
+				)
+			)
+
+			res2 = json.loads(res.data.decode())
+			self.assertTrue(res2['message'] == 'password reset successful')
+
+	def test_reset_password_no_match(self):
+		"""test api can reset password don't match"""
+		with self.client:
+			login_data = self.register_and_login_in_user()
+			token = login_data['auth_token']
+			res = self.client.post(
+				'/api/v2/auth/reset-password',
+				headers=dict(Authorization=f'Bearer {token}'),
+				content_type='application/json',
+				data=json.dumps(
+					dict(
+						old_password='hardp96THAN.Ev37',
+						new_password='newPassword##popa985'
+					)
+				)
+			)
+
+			res2 = json.loads(res.data.decode())
+			self.assertTrue(res2['message'] == "password don't match")
+
+	def test_reset_password_no_json(self):
+		"""test api no json object"""
+		with self.client:
+			login_data = self.register_and_login_in_user()
+			token = login_data['auth_token']
+			res = self.client.post(
+				'/api/v2/auth/reset-password',
+				headers=dict(Authorization=f'Bearer {token}'),
+				content_type='text/html',
+				data=json.dumps(
+					dict(
+						old_password='hardp96THAN.Ev37',
+						new_password='newPassword##popa985'
+					)
+				)
+			)
+
+			res2 = json.loads(res.data.decode())
+			self.assertIn('Content-type must be json', str(res2))
+
+	def test_reset_password_validation_error(self):
+		"""test api validation error"""
+		with self.client:
+			login_data = self.register_and_login_in_user()
+			token = login_data['auth_token']
+			res = self.client.post(
+				'/api/v2/auth/reset-password',
+				headers=dict(Authorization=f'Bearer {token}'),
+				content_type='application/json',
+				data=json.dumps(
+					dict(
+						old_password='hardp96THAN.Ev37'
+					)
+				)
+			)
+
+			res2 = json.loads(res.data.decode())
+			self.assertIn('required field', str(res2))
+
 	# use functions
 	def register_wrong_content_type(self, username, email, password):
 		"""this function uses content-type: text"""
