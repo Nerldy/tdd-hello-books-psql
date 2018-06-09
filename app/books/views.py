@@ -178,13 +178,14 @@ def api_update_book(current_user, book_id):
 
 	if request.content_type == 'application/json':
 		if validate_update_book_schema.validate(req_data):
-			book_update = Book.query.filter(Book.id == book_id).first()
-			title = format_inputs(req_data.get('title'))
-
 			try:
 				int(book_id)
 			except ValueError:
 				return response('error', 'please provide a book id. ID must be integer', 400)
+
+			book_update = Book.query.filter(Book.id == book_id).first()
+			title = format_inputs(req_data.get('title'))
+
 			if book_update:
 				book_update.title = title
 				book_update.save()
