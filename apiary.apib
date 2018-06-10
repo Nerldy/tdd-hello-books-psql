@@ -1,0 +1,206 @@
+FORMAT: 1A
+HOST: https://desolate-refuge-24290.herokuapp.com/
+
+# hello-books-postgresql
+
+Hello-Books is a simple application that helps manage a library and its processes like stocking, tracking and renting books. With this application users are able to find and rent books. The application also has an admin section where the admin can do things like add books, delete books, increase the quantity of a book etc
+
+## User [/users/books/{book_id}]
+
++ Paremeters
+    + id - id of book user wants to borrow
+
+### Borrow Book [POST]
+User borrows book by it's ***id*** and it adds it to user's database
+
++ Response 200 (application/json)
+        
+        details of borrowed book
+        
++ Response 404
+
++ Response 400
+
+
+## Register [/auth/register]
+
+### Register New User [POST]
+Register new user
+
++ Request (application/json)
+
+    + Attributes
+        - Include User
+        
++ Response 201 (application/json)       
+
++ Response 401 (application/json)
+
+
+## Login [/auth/login]
+
+### Login User [POST]
+
++ Request (application/json)
+
+    + Attributes
+        - Include User
+        
++ Response 401 (application/json)
+
+
+## Logout [/auth/logout]
+
+### Logout User [POST]
+
++ Request (application/json)
+    + Attributes
+        + username: `admin1` (string) - username
+        
++ Response 200 (application/json)
+
++ Response 401 (application/json)
+
+
+## Reset Password [/auth/reset-password]
+
+### Reset Password [POST]
+
++ Request (application/json)
+    + Attributes
+        + username: `admin1` (string, required) - username
+        + old_password: `123456789` (string, required) - old password that you want to replace
+        + new_password: `987654321` (string, required) - new password to replace the old one
+        
++ Response 200 (application/json)
+
++ Response 404 (application/json)
+
++ Response 401 (application/json)
+
+## Books Collection [/books]
+
+### List All Books [GET]
+Retrieve all books in the database
+
++ Response 200 (application/json)
+
+        {
+            "all books": [
+                {
+                "id": "1",
+                "title": "Hello Books",
+                "isbn": "123-456-789-1",
+                "author": ["John Doe"],
+                "synopsis": "Hello-Books is a simple application that helps manage a library and its processes like stocking, tracking and renting books. With this application users are able to find and rent books. The application also has an admin section where the admin can do things like add books, delete books, increase the quantity of a book etc",
+                "date_created": "Wed, 18 Apr 2018 04:51:26 GMT"
+                }
+            ]
+        }
+### Create a New Book [POST]
+
+You may create your own book using this action. It takes a JSON
+object containing a title, ISBN, synopsis, and a collection of authors in the
+form of author.
+
++ Request (application/json)
+
+    + Attributes
+        - Include Book
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "Book successfully created": "{}"
+            }
+            
++ Response 400 (application/json)
+
+        {
+            "error": "error message"
+            }
+            
+## Book [/books/{book_id}]
+Book actions by it's *id*
+
+*book_id* is required to perform these actions
+
++ Parameters
+    + book_id (string, required) - ID of the book
+    
+### GET Book [GET]
+Retrieve a book     
+
++ Response 200 (application/json)
+    
+    + Attributes
+        - Include Book
+        
++ Response 404 (application/json)
+    
+        {
+            "error": "Not found"
+        }
+        
+### PUT Book [PUT]
+Update a book **title, author,** or **synopsis** by it's **id**
+
++ Request (application/json)
+        
+        {
+            "title": "Update Book",
+            "author": ["guess new name"]
+        }
+
++ Response 200 (application/json)
+        
+        {
+            "Book updated": "{}"
+        }
+        
++ Response 400 (application/json)
+        
+### Delete Book [DELETE]
+Delete books
+
+**Warning:** This action **permanently** removes the book from the database.
+
+
+
++ Response 200 (application/json)
+    
+        {
+            "result": true
+        }
+    
++ Response 404 (application/json)
+
+        {
+            "error": "Not found"
+        }
+        
+
+
+
+
+
+
+
+# Data Structures
+
+## Book (object)
+
++ title: `Hello Books` (string, required) - Book title
++ isbn: `1234567890` (string, required) - unique ISBN number of the book. 
+Must be 10 digits
+
+
+
+## User (object)
+
++ username: `Username` (string, required) - username. Must be unique
++ email: email (string, required) - email. Must be unique
++ password: `Password#ready` (string, required) - user password. Must not be less than 8  characters, 
+Must have one letter in CAPS,
