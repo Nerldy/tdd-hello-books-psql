@@ -2,7 +2,6 @@ from app import db, app
 from werkzeug.security import generate_password_hash, check_password_hash
 import jwt
 from datetime import datetime, timedelta
-from flask import current_app
 
 
 class Book(db.Model):
