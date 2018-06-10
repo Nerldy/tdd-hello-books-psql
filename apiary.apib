@@ -193,13 +193,14 @@ Delete books
 ## Book (object)
 
 + title: `Hello Books` (string, required) - Book title
-+ isbn: `1234-56-789-1` (string, required) - unique ISBN number of the book
-+ synopsis: `Hello-Books is a simple application that helps manage a library and its processes like stocking, tracking and renting books. With this application users are able to find and rent books. The application also has an admin section where the admin can do things like add books, delete books, increase the quantity of a book etc` (string, required) - synopsis of the book. Minimum 50 words
-+ author: `John Doe` (array, required) - list book author(s)
++ isbn: `1234567890` (string, required) - unique ISBN number of the book. 
+Must be 10 digits
+
 
 
 ## User (object)
 
 + username: `Username` (string, required) - username. Must be unique
 + email: email (string, required) - email. Must be unique
-+ password: `Password#ready` (string, required) - user password. Must not be less than 8  characters
++ password: `Password#ready` (string, required) - user password. Must not be less than 8  characters, 
+Must have one letter in CAPS,
