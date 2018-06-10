@@ -1,2 +1,2 @@
-web: gunicorn app:app
+web: uwsgi uwsgi.ini
 release: python manage.py db upgrade
