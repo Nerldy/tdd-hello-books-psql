@@ -1,2 +1,2 @@
-web: python run.py
-heroku config:set PORT=5000
+web: uwsgi uwsgi.ini
+release: python manage.py db upgrade
