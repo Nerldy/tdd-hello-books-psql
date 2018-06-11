@@ -1,2 +1,1 @@
-web: uwsgi uwsgi.ini
-release: python manage.py db upgrade
+web: python run.py
