@@ -1,9 +1,43 @@
 FORMAT: 1A
-HOST: https://desolate-refuge-24290.herokuapp.com/
+HOST: https://hello-books-postgresql.herokuapp.com/
 
 # hello-books-postgresql
 
-Hello-Books is a simple application that helps manage a library and its processes like stocking, tracking and renting books. With this application users are able to find and rent books. The application also has an admin section where the admin can do things like add books, delete books, increase the quantity of a book etc
+This is where users are going to rent a book. For this app, the admin can perform CRUD function while normal users can borrow or return a book. If book is borrowed, another user can't access it it until it's been returned. 
+
+## Register [/api/v2/auth/register]
+
+### Register New User [POST]
+Register new user
+
++ Request (application/json)
+
+    + Attributes
+        - Include User
+        
++ Response 201 (application/json) 
+
+        {
+            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1Mjg4MTI1OTIsImlhdCI6MTUyODcyNjE3Miwic3ViIjoxfQ.bZJ8QTqy1Z3Pijh8bW9qgwokH3Q64vo14MwvslMLfPQ",
+            "message": "successfully registered",
+            "status": "success"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "user already exists, please sign in",
+            "status": "error"
+        },
+        {
+            "error": "bad request"
+        }
+        
++ Response 500 (application/json)
+    
+        {
+            "error": "internal server error"
+        }
 
 ## User [/users/books/{book_id}]
 
@@ -22,19 +56,6 @@ User borrows book by it's ***id*** and it adds it to user's database
 + Response 400
 
 
-## Register [/auth/register]
-
-### Register New User [POST]
-Register new user
-
-+ Request (application/json)
-
-    + Attributes
-        - Include User
-        
-+ Response 201 (application/json)       
-
-+ Response 401 (application/json)
 
 
 ## Login [/auth/login]
@@ -91,8 +112,6 @@ Retrieve all books in the database
                 "id": "1",
                 "title": "Hello Books",
                 "isbn": "123-456-789-1",
-                "author": ["John Doe"],
-                "synopsis": "Hello-Books is a simple application that helps manage a library and its processes like stocking, tracking and renting books. With this application users are able to find and rent books. The application also has an admin section where the admin can do things like add books, delete books, increase the quantity of a book etc",
                 "date_created": "Wed, 18 Apr 2018 04:51:26 GMT"
                 }
             ]
@@ -203,4 +222,5 @@ Must be 10 digits
 + username: `Username` (string, required) - username. Must be unique
 + email: email (string, required) - email. Must be unique
 + password: `Password#ready` (string, required) - user password. Must not be less than 8  characters, 
-Must have one letter in CAPS,
+Must have one letter in CAPS, a number, small caps and one character.
++ is_admin: true (boolean) - optional boolean. If left out it will default to false. Use true only when registering as an admin.
