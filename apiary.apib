@@ -5,209 +5,44 @@ HOST: https://hello-books-postgresql.herokuapp.com/
 
 This is where users are going to rent a book. For this app, the admin can perform CRUD function while normal users can borrow or return a book. If book is borrowed, another user can't access it it until it's been returned. 
 
-## Register [/api/v2/auth/register]
+## User Registration [/api/v2/auth/register]
 
-### Register New User [POST]
-Register new user
+
+### Register a user [POST]
+
+
+Register a user by sending a json object with username, email, password and optional is_admin true if user
+is admin iproperties.
+The password must be 8 characters or more, must have one capital letter, a number
+and a character.
+The email must be in the format (something@something.something)
 
 + Request (application/json)
 
-    + Attributes
-        - Include User
-        
-+ Response 201 (application/json) 
+        {
+            "username": "admin",
+            "password": "ADMINlogin#password",
+            "is_admin": true
+        }
+
+
++ Response 201 (application/json)
 
         {
-            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1Mjg4MTI1OTIsImlhdCI6MTUyODcyNjE3Miwic3ViIjoxfQ.bZJ8QTqy1Z3Pijh8bW9qgwokH3Q64vo14MwvslMLfPQ",
+            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDM0ODQ5OTYsImlhdCI6MTUwMzM5ODU4Niwic3ViIjo1fQ.GC6IEOohdo_xrz9__UeugIlir0qtJdKbEzBtLgqjt5A",
             "message": "successfully registered",
             "status": "success"
         }
 
 + Response 400 (application/json)
 
-        
-+ Response 500 (application/json)
-    
-## Login [/api/v2/auth/login]
-
-### Login User [POST]
-
-+ Request (application/json)
-
-    + Attributes
-        - Include User
-        
-+ Response 401 (application/json)
-
-
-## Logout [/auth/logout]
-
-### Logout User [POST]
-
-+ Request (application/json)
-    + Attributes
-        + username: `admin1` (string) - username
-        
-+ Response 200 (application/json)
-
-+ Response 401 (application/json)
-
-
-## Reset Password [/auth/reset-password]
-
-### Reset Password [POST]
-
-+ Request (application/json)
-    + Attributes
-        + username: `admin1` (string, required) - username
-        + old_password: `123456789` (string, required) - old password that you want to replace
-        + new_password: `987654321` (string, required) - new password to replace the old one
-        
-+ Response 200 (application/json)
-
-+ Response 404 (application/json)
-
-+ Response 401 (application/json)        
-
-## User [/users/books/{book_id}]
-
-+ Paremeters
-    + id - id of book user wants to borrow
-
-### Borrow Book [POST]
-User borrows book by it's ***id*** and it adds it to user's database
-
-+ Response 200 (application/json)
-        
-        details of borrowed book
-        
-+ Response 404
-
-+ Response 400
-
-
-## Books Collection [/books]
-
-### List All Books [GET]
-Retrieve all books in the database
-
-+ Response 200 (application/json)
-
         {
-            "all books": [
-                {
-                "id": "1",
-                "title": "Hello Books",
-                "isbn": "123-456-789-1",
-                "date_created": "Wed, 18 Apr 2018 04:51:26 GMT"
-                }
-            ]
-        }
-### Create a New Book [POST]
-
-You may create your own book using this action. It takes a JSON
-object containing a title, ISBN, synopsis, and a collection of authors in the
-form of author.
-
-+ Request (application/json)
-
-    + Attributes
-        - Include Book
-
-+ Response 201 (application/json)
-
-    + Body
-
-            {
-                "Book successfully created": "{}"
-            }
-            
-+ Response 400 (application/json)
-
-        {
-            "error": "error message"
-            }
-            
-## Book [/books/{book_id}]
-Book actions by it's *id*
-
-*book_id* is required to perform these actions
-
-+ Parameters
-    + book_id (string, required) - ID of the book
-    
-### GET Book [GET]
-Retrieve a book     
-
-+ Response 200 (application/json)
-    
-    + Attributes
-        - Include Book
-        
-+ Response 404 (application/json)
-    
-        {
-            "error": "Not found"
+            "message": "user already exists, please sign in",
+            "status": "error"
         }
         
-### PUT Book [PUT]
-Update a book **title, author,** or **synopsis** by it's **id**
-
-+ Request (application/json)
-        
-        {
-            "title": "Update Book",
-            "author": ["guess new name"]
-        }
-
-+ Response 200 (application/json)
-        
-        {
-            "Book updated": "{}"
-        }
-        
-+ Response 400 (application/json)
-        
-### Delete Book [DELETE]
-Delete books
-
-**Warning:** This action **permanently** removes the book from the database.
-
-
-
-+ Response 200 (application/json)
-    
-        {
-            "result": true
-        }
-    
-+ Response 404 (application/json)
++ Response 500 (application/json)        
 
         {
-            "error": "Not found"
+            "error": "internal server error"
         }
-        
-
-
-
-
-
-
-
-# Data Structures
-
-## Book (object)
-
-+ title: `Hello Books` (string, required) - Book title
-+ isbn: `1234567890` (string, required) - unique ISBN number of the book. 
-Must be 10 digits
-
-
-
-## User (object)
-
-+ username: `username` (string, required) - username. Must be unique
-+ email: username@mail.com (string, required) - email. Must be unique
-+ password: `Password#ready` (string, required) - user password. Must not be less than 8  characters, 
-Must have one letter in CAPS, a number, small caps and one character.
-+ is_admin: true (boolean) - optional boolean. If left out it will default to false. Use true only when registering as an admin.
