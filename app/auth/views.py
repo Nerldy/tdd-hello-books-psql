@@ -76,10 +76,10 @@ class RegisterUser(MethodView):
 		"""register user, add them to the database"""
 
 		if request.content_type == 'application/json':
-			request.json['username'] = format_inputs(request.json.get('username'))
 			post_data = request.get_json()
 
 			if validate_user_schema.validate(post_data):
+				request.json['username'] = format_inputs(request.json.get('username'))
 				username = post_data.get('username')
 				email = post_data.get('email')
 				password = post_data.get('password')
