@@ -5,6 +5,13 @@ import json
 class TestBookMethods(BaseTestCase):
 	"""test books methods and views"""
 
+	def test_api_redirects_to_docs(self):
+		"""test api / redirects to the documentation"""
+
+		with self.client:
+			get_doc = self.client.get('/')
+			self.assertTrue(get_doc.status_code == 302)
+
 	def test_user_can_create_a_book(self):
 		"""test user can create a book"""
 
