@@ -25,40 +25,10 @@ Register new user
 
 + Response 400 (application/json)
 
-        {
-            "message": "user already exists, please sign in",
-            "status": "error"
-        },
-        {
-            "error": "bad request"
-        }
         
 + Response 500 (application/json)
     
-        {
-            "error": "internal server error"
-        }
-
-## User [/users/books/{book_id}]
-
-+ Paremeters
-    + id - id of book user wants to borrow
-
-### Borrow Book [POST]
-User borrows book by it's ***id*** and it adds it to user's database
-
-+ Response 200 (application/json)
-        
-        details of borrowed book
-        
-+ Response 404
-
-+ Response 400
-
-
-
-
-## Login [/auth/login]
+## Login [/api/v2/auth/login]
 
 ### Login User [POST]
 
@@ -97,7 +67,24 @@ User borrows book by it's ***id*** and it adds it to user's database
 
 + Response 404 (application/json)
 
-+ Response 401 (application/json)
++ Response 401 (application/json)        
+
+## User [/users/books/{book_id}]
+
++ Paremeters
+    + id - id of book user wants to borrow
+
+### Borrow Book [POST]
+User borrows book by it's ***id*** and it adds it to user's database
+
++ Response 200 (application/json)
+        
+        details of borrowed book
+        
++ Response 404
+
++ Response 400
+
 
 ## Books Collection [/books]
 
@@ -219,8 +206,8 @@ Must be 10 digits
 
 ## User (object)
 
-+ username: `Username` (string, required) - username. Must be unique
-+ email: email (string, required) - email. Must be unique
++ username: `username` (string, required) - username. Must be unique
++ email: username@mail.com (string, required) - email. Must be unique
 + password: `Password#ready` (string, required) - user password. Must not be less than 8  characters, 
 Must have one letter in CAPS, a number, small caps and one character.
 + is_admin: true (boolean) - optional boolean. If left out it will default to false. Use true only when registering as an admin.
