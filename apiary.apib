@@ -147,7 +147,52 @@ If everything is right it will return a token as __auth_token__ that you will ne
             "status": "error"
         }
 
+## Book Resources [/api/v2/books{?limit}{?page_num}]
+
+You can create, read, update or delete a book.
+
+__IMPORTANT!:__ A valid token should be present in the header. If you're going to create, update or delete a book make sure the user is admin. If **limit** is provided, **page_num** must also be provided otherwise you'll het an error.
+
++ Parameters
+    + limit(optional, string, `limit=2`) - Limit the result number sent back
+    + page_num(optional, string, `page_num=1`) - Page number
+
+### Create Book [POST]
+
+Admin can add a new book.
+
++ Request (application/json)
+
+        + Headers
+            Authorization: Bearer JWT Token
+
+        + Body
+            + Attributes
+                - Include Book
+
++ Response 200 (application/json)
+
+        {
+            "message": {
+                "book_created": {
+                    "date_created": "day, date, year, time",
+                    "date_modified": "day, date, year, time",
+                    "id": 1,
+                    "isbn": "1234567890",
+                    "title": "hello books"
+                }
+            },
+            "status": "success"
+        }
+
 # Data Structures
+
+## Book (object)
+
++ title: `Hello Books` (string, required) - Book title
++ isbn: `1234567890` (string, required) - unique ISBN number of the book. Must be 10 digits.
+
+
 
 ## User (object)
 
