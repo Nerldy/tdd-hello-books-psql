@@ -54,6 +54,6 @@ from app.users.views import users
 app.register_blueprint(users, url_prefix='/api/v2/users/books')
 
 
-@app.route("/")
-def api_home_page():
-	return redirect("https://tddhellobookspsql.docs.apiary.io/#")
+# @app.route("/")
+# def api_home_page():
+# 	return redirect("https://tddhellobookspsql.docs.apiary.io/#")
