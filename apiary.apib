@@ -22,7 +22,7 @@ The email must be in the format (something@something.something)
         {
             "username": "admin1",
             "email: "admin1@mail.com",
-            "password": "ADMINlogin#password",
+            "password": "ADMINlogin#password1234",
             "is_admin": true
         }
 
@@ -86,7 +86,8 @@ If any of these fields misses or an uknown field is added it will return an erro
 
 If everything is right it will return a token as __auth_token__ that you will need for any authentication usage.
 
-+ Request
++ Request (application/json)
+
     + Attributes
         - Include User
 
@@ -152,4 +153,4 @@ If everything is right it will return a token as __auth_token__ that you will ne
 
 + username: `Username` (string, required) - Must be unique
 + email: `username@mail.com` (string, required) - Must be unique and have the format **localpart@domain.domain**
-+ password: `USERemail@password` (string, required) - Must be 8 characters or more, have at least one letter in caps, small caps and contain and contain both numerals and characters.
++ password: `USERemail@password123` (string, required) - Must be 8 characters or more, have at least one letter in caps, small caps and contain and contain both numerals and characters.
