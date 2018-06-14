@@ -125,7 +125,7 @@ class LoginUser(MethodView):
 				return response('error', "user doesn't exist or password is incorrect or username and email do not match", 401)
 
 			return response('error', validate_login_schema.errors, 401)
-		return response('error', 'content-type must be json', 202)
+		return response('error', 'content-type must be json', 400)
 
 
 class LogoutUser(MethodView):
