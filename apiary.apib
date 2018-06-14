@@ -20,7 +20,8 @@ The email must be in the format (something@something.something)
 + Request (application/json)
 
         {
-            "username": "admin",
+            "username": "admin1",
+            "email: "admin1@mail.com",
             "password": "ADMINlogin#password",
             "is_admin": true
         }
@@ -47,6 +48,22 @@ The email must be in the format (something@something.something)
             "error": "bad request"
         }
         
++ Response 400 (application/json)
+
+        {  
+            "message": {
+                "email": [
+                    "required field"
+                ],
+                "password": [
+                    "required field"
+                ],
+                "username": [
+                    "required field"
+                ]
+            },
+            "status": "error"
+        }        
         
         
 + Response 500 (application/json)        
