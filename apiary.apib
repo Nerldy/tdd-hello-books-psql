@@ -20,7 +20,8 @@ The email must be in the format (something@something.something)
 + Request (application/json)
 
         {
-            "username": "admin",
+            "username": "admin1",
+            "email: "admin1@mail.com",
             "password": "ADMINlogin#password",
             "is_admin": true
         }
@@ -40,17 +41,103 @@ The email must be in the format (something@something.something)
             "message": "user already exists, please sign in",
             "status": "error"
         }
-        
+
 + Response 400 (application/json)
 
         {
             "error": "bad request"
         }
-        
-        
-        
-+ Response 500 (application/json)        
+
++ Response 400 (application/json)
+
+        {
+            "message": {
+                "email": [
+                    "required field"
+                ],
+                "password": [
+                    "required field"
+                ],
+                "username": [
+                    "required field"
+                ]
+            },
+            "status": "error"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "content-type must be json",
+            "status": "error"
+        }
+
++ Response 500 (application/json)
 
         {
             "error": "internal server error"
+        }
+
+## Login [/api/v2/auth/login]
+
+### Login user [POST]
+Login user by sending username, email and password.
+If any of these fields misses or an uknown field is added it will return an error.
+
+If everything is right it will return a token as __auth_token__ that you will need for any authentication usage.
+
++ Response 200 (application/json)
+
+        {
+            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDM0ODQ5OTYsImlhdCI6MTUwMzM5ODU4Niwic3ViIjo1fQ.GC6IEOohdo_xrz9__UeugIlir0qtJdKbEzBtLgqjt5A",
+            "message": "successfully logged in",
+            "status": "success"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "user doesn't exist or password is incorrect or username and email do not match",
+            "status": "error"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": {
+                "email": [
+                    "required field"
+                ],
+                "password": [
+                    "required field"
+                ],
+                "username": [
+                    "required field"
+                ]
+            },
+            "status": "error"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": {
+                "key": [
+                    "unknown field"
+                ]
+            },
+            "status": "error"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "error": "bad request"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "content-type must be json",
+            "status": "error"
         }
