@@ -147,6 +147,42 @@ If everything is right it will return a token as __auth_token__ that you will ne
             "status": "error"
         }
 
+        
+## Logout [/api/v2/auth/logout]
+
+### Log Out User [POST]
+
+Log out user by sending a request with their **auth_token** which will then be blaclisted.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+            
++ Response 200 (application/json)
+
+        {
+            "message": "successfully logged out",
+            "status": "success"
+        }
+    
+        
++ Response 403 (application/json)
+
+        {
+            "message": "provide a valid token",
+            "status": "error"
+        }       
+
++ Response 403 (application/json)
+
+        {
+          "message": "provide an authorization header",
+          "status": "error"
+        }
+
+
 ## Book Resources [/api/v2/books{?limit}{?page_num}]
 
 You can create, read, update or delete a book.
@@ -154,8 +190,8 @@ You can create, read, update or delete a book.
 __IMPORTANT!:__ A valid token should be present in the header. If you're going to create, update or delete a book make sure the user is admin. If **limit** is provided, **page_num** must also be provided otherwise you'll het an error.
 
 + Parameters
-    + limit(optional, string, `limit=2`) - Limit the result number sent back
-    + page_num(optional, string, `page_num=1`) - Page number
+    + limit (optional, string, `limit=2`) - Limit the result number sent back
+    + page_num (optional, string, `page_num=1`) - Page number
 
 ### Create Book [POST]
 
@@ -163,12 +199,12 @@ Admin can add a new book.
 
 + Request (application/json)
 
-        + Headers
-            Authorization: Bearer JWT Token
-
-        + Body
-            + Attributes
-                - Include Book
+    + Headers
+        Authorization: Bearer JWT Token
+    
+    + Body
+        + Attributes
+            - Include Book
 
 + Response 200 (application/json)
 
