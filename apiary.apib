@@ -260,6 +260,19 @@ Admin can add a new book.
             "status": "error"
         }
 
++ Response 400 (application/json)
+
+        {
+            "error": {
+                "limit": [
+                    "required field"
+                ],
+                "page": [
+                    "required field"
+                ]
+            }
+        }
+
 + Response 202 (application/json)
 
         {
