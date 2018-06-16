@@ -425,17 +425,155 @@ Get all books in the database. The results can be paginated with **limit** and *
             "status": "error"
         }
 
+## Single Book Resources [/api/v2/books/{book_id}]
+
++ Parameters
+    + book_id (required,number) - id of the book
+
+
+### Get a book [GET]
+Get a single book with it's id.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "books": {
+                "date_created": "Sat, 16 Jun 2018 14:08:36 GMT",
+                "date_modified": "Sat, 16 Jun 2018 15:03:19 GMT",
+                "id": 1,
+                "isbn": "1234567890",
+                "title": "hello books"
+            },
+            "status": "success"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "please provide a book id. ID must be integer",
+            "status": "error"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "book not found",
+            "status": "error"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing",
+            "status": "failed"
+        }
+
 ### Update a book [PUT]
 
 You can only update the title of the book if you're the admin.
 
-**__IMPORTANT!:__**isbn number of the book must also be provided but will not update.
-
 + title (required, string) - Book title
-+ isbn (required, string) - isbn number of the book
 
 + Request (application/json)
 
+     Headers
+
+        Authorization: Bearer JWT Token
+
+    + Body
+
+            {
+              "title": "booked"
+            }
+
++ Response 201 (application/json)
+
+        {
+            "date_created": "Sat, 16 Jun 2018 14:08:36 GMT",
+            "date_modified": "Sat, 16 Jun 2018 15:03:19 GMT",
+            "id": 1,
+            "isbn": "1234567890",
+            "status": "success",
+            "title": "booked"
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Content-type must be json",
+            "status": "error"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "please provide a book id. ID must be integer",
+            "status": "error"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing",
+            "status": "failed"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "book with id 2 does not exist",
+            "status": "error"
+        }
+
++ Response 405 (application/json)
+
+        {
+            "error": "method not allowed"
+        }
+
+
+### Delete Book [DELETE]
+Delete book from database with it's id. Only admin can perform this.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
+
++ Response 200 (application/json)
+
+        {
+            "message": "book with id 2 has been deleted",
+            "status": "success"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "please provide a book id. ID must be integer",
+            "status": "error"
+        }
+
+
++ Response 404 (application/json)
+
+        {
+            "error": "not found"
+        }
+
++ Response 405 (application/json)
+
+        {
+            "error": "method not allowed"
+        }
 
 
 # Data Structures
