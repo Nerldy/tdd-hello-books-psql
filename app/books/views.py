@@ -31,7 +31,7 @@ pagination_schema = {
 		'type': 'string',
 		'required': True
 	},
-	'page_num': {
+	'page': {
 		'type': 'string',
 		'required': True
 	}
@@ -63,7 +63,7 @@ def api_get_all_books(current_user):
 		if validate_pagination_schema.validate(req_args):
 			try:
 				page_limit = int(request.args.get('limit'))
-				page_number = int(request.args.get('page_num'))
+				page_number = int(request.args.get('page'))
 
 				book_pagination = Book.query.paginate(
 					per_page=page_limit,
