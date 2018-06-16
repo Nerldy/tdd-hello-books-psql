@@ -224,6 +224,46 @@ Admin can add a new book.
             "status": "success"
         }
 
++ Response 400 (application/json)
+
+        {
+            "error": "isbn length must be 10",
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "isbn must only include numbers",
+            "status": "error"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "error": "bad request"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": {
+                    "isbn": [
+                        "required field"
+                    ],
+                    "title": [
+                        "required field"
+                    ]
+        },
+            "status": "error"
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Content-type must be json",
+            "status": "error"
+        }
+
 # Data Structures
 
 ## Book (object)
