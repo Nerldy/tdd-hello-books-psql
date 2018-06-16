@@ -359,6 +359,58 @@ Admin can add a new book.
             "status": "error"
         }
 
+### GET all books [GET]
+Get all books in the database. The results can be paginated with **limit** and **page**.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "books": [
+                {
+                    "date_created": "Sat, 16 Jun 2018 14:08:36 GMT",
+                    "date_modified": "Sat, 16 Jun 2018 14:08:36 GMT",
+                    "id": 1,
+                    "isbn": "1234567890",
+                    "title": "hello books"
+                }
+            ]
+        }
+
++ Response 200 (application/json)
+
+        {
+            "books": [
+                {
+                    "date_created": "Sat, 16 Jun 2018 14:08:36 GMT",
+                    "date_modified": "Sat, 16 Jun 2018 14:08:36 GMT",
+                    "id": 1,
+                    "isbn": "1234567890",
+                    "title": "hello books"
+                }
+            ],
+            "current_page": 1,
+            "pages": 1
+        }
+
++ Response 400 (application/json)
+
+        {
+            "error": "404 Not Found: The requested URL was not found on the server.  If you entered the URL manually please check your spelling and try again."
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Content-type must be json",
+            "status": "error"
+        }
+
 # Data Structures
 
 ## Book (object)
