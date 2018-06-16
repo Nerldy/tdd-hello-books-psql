@@ -17,6 +17,11 @@ def page_not_found(e):
 	return jsonify({'error': 'not found'}), 404
 
 
+@app.errorhandler(405)
+def page_not_found(e):
+	return jsonify({'error': 'method not allowed'}), 405
+
+
 @app.errorhandler(400)
 def bad_request(e):
 	return jsonify({"error": 'bad request'}), 400
