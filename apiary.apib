@@ -193,8 +193,8 @@ You can create, read, update or delete a book.
 __IMPORTANT!:__ A valid token should be present in the header. If you're going to create, update or delete a book make sure the user is admin. If **limit** is provided, **page_num** must also be provided otherwise you'll het an error.
 
 + Parameters
-    + limit (optional, string, `limit=2`) - Limit the result number sent back
-    + page_num (optional, string, `page_num=1`) - Page number
+    + limit(optional, string, `limit=2`) - Limit the result number sent back
+    + page_num(optional, string, `page_num=1`) - Page number
 
 ### Create Book [POST]
 
@@ -206,8 +206,11 @@ Admin can add a new book.
             Authorization: Bearer JWT Token
 
         + Body
-            + Attributes
-                - Include Book
+
+            {
+                "title": "hello book",
+                "isbn": "1234567890"
+            }
 
 + Response 200 (application/json)
 
