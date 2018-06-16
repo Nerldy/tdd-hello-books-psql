@@ -181,8 +181,8 @@ Log out user by sending a request with their **auth_token** which will then be b
 + Response 403 (application/json)
 
         {
-          "message": "provide an authorization header",
-          "status": "error"
+            "message": "provide an Authorization header",
+            "status": "error"
         }
 
 ## Reset Password [/api/v2/auth/reset-password]
@@ -192,6 +192,68 @@ Reset a user password by sending **old_password** and **new_password** in the js
 If any of these fields misses or an uknown field is added it will return an error.
 
 __IMPORTANT!:__ A valid token should be present in the header.
+
++ Request (application/json)
+
+        + Headers
+
+                Authorization: Bearer JWT Token
+
+        + Body
+
+                {
+                    "old_password": "ADMINlogin#password123",
+                    "new_password": "NEWadminPassw4rd#"
+                }
+
++ Response 200 (application/json)
+
+        {
+            "message": "password reset successful",
+            "status": "success"
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Content-type must be json",
+            "status": "error"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "Content-type must be json",
+            "status": "error"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "password don't match",
+            "status": "error"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing",
+            "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": {
+                "new_password": [
+                    "required field"
+                ],
+                "old_password": [
+                    "required field"
+                ]
+            },
+            "status": "error"
+        }
 
 ## Book Resources [/api/v2/books{?limit}{?page_num}]
 
@@ -280,6 +342,15 @@ Admin can add a new book.
                 ]
             }
         }
+
+
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing",
+            "status": "failed"
+        }
+
 
 + Response 202 (application/json)
 
