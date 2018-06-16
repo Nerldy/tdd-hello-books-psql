@@ -255,7 +255,7 @@ __IMPORTANT!:__ A valid token should be present in the header.
             "status": "error"
         }
 
-## Book Resources [/api/v2/books{?limit}{?page_num}]
+## Book Resources [/api/v2/books{?limit}{?page_num}{?returned}]
 
 You can create, read, update or delete a book.
 
@@ -263,7 +263,8 @@ __IMPORTANT!:__ A valid token should be present in the header. If you're going t
 
 + Parameters
     + limit(optional, string, `limit=2`) - Limit the result number sent back
-    + page_num(optional, string, `page=1`) - Page number
+    + page(optional, string, `page=1`) - Page number
+    + returned(optional, string, `returned=false`) - Find books not returned
 
 ### Create Book [POST]
 
@@ -360,7 +361,7 @@ Admin can add a new book.
         }
 
 ### GET all books [GET]
-Get all books in the database. The results can be paginated with **limit** and **page**.
+Get all books in the database. The results can be paginated with **limit** and **page**. When using **returned**, **limit** and **page** must also be provided.
 
 + Request (application/json)
 
@@ -402,6 +403,19 @@ Get all books in the database. The results can be paginated with **limit** and *
 
         {
             "error": "404 Not Found: The requested URL was not found on the server.  If you entered the URL manually please check your spelling and try again."
+        }
+
++ Response 400 (application/json)
+
+        {
+            "error": {
+                "limit": [
+                    "required field"
+                ],
+                "page": [
+                    "required field"
+                ]
+            }
         }
 
 + Response 202 (application/json)
