@@ -81,7 +81,7 @@ The email must be in the format (something@something.something)
 ## Login [/api/v2/auth/login]
 
 ### Login user [POST]
-Login user by sending username, email and password.
+Login user by sending **username, email** and **password**.
 If any of these fields misses or an uknown field is added it will return an error.
 
 If everything is right it will return a token as __auth_token__ that you will need for any authentication usage.
@@ -155,7 +155,7 @@ If everything is right it will return a token as __auth_token__ that you will ne
 
 ### Log Out User [POST]
 
-Log out user by sending a request with their **auth_token** which will then be blaclisted.
+Log out user by sending a request with their **auth_token** which will then be blacklisted.
 
 + Request (application/json)
 
@@ -185,12 +185,19 @@ Log out user by sending a request with their **auth_token** which will then be b
           "status": "error"
         }
 
+## Reset Password [/api/v2/auth/reset-password]
+
+### Reset User Password [POST]
+Reset a user password by sending **old_password** and **new_password** in the json file.
+If any of these fields misses or an uknown field is added it will return an error.
+
+__IMPORTANT!:__ A valid token should be present in the header.
 
 ## Book Resources [/api/v2/books{?limit}{?page_num}]
 
 You can create, read, update or delete a book.
 
-__IMPORTANT!:__ A valid token should be present in the header. If you're going to create, update or delete a book make sure the user is admin. If **limit** is provided, **page_num** must also be provided otherwise you'll het an error.
+__IMPORTANT!:__ A valid token should be present in the header. If you're going to create, update or delete a book make sure the user is admin. If **limit** is provided, **page** must also be provided otherwise you'll het an error.
 
 + Parameters
     + limit(optional, string, `limit=2`) - Limit the result number sent back
