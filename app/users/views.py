@@ -13,7 +13,7 @@ pagination_schema = {
 		'type': 'string',
 		'required': True
 	},
-	'page_num': {
+	'page': {
 		'type': 'string',
 		'required': True
 	},
