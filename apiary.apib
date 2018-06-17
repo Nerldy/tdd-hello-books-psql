@@ -579,6 +579,88 @@ Delete book from database with it's id. Only admin can perform this.
             "error": "method not allowed"
         }
 
+## User Resources [/api/v2/users/books/{book_id}]
+
++ Parameters
+    + book_id (required,number) - id of the book
+
+### User Borrow Book [POST]
+
+User can borrow a book by using it's id. Once the book has been borrowed no one else can borrow it until it's returned.
+
++ Request (application/json)
+
+     Headers
+
+        Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "book has been borrowed",
+            "status": "success"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "book with id 1 is currently unavailable",
+            "status": "message"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "please provide a book id. ID must be integer",
+            "status": "error"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing",
+            "status": "failed"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "book not found",
+            "status": "error"
+        }
+
+
+### User Return Book [PUT]
+
+You can return a book by using it's id.
+
++ Response 200 (application/json)
+
+        {
+            "message": "book with id 1 has been returned",
+            "status": "success"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "please provide a book id. ID must be integer",
+            "status": "error"
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing",
+            "status": "failed"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "book not found",
+            "status": "error"
+        }
 
 # Data Structures
 
