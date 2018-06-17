@@ -638,6 +638,12 @@ User can borrow a book by using it's id. Once the book has been borrowed no one 
 
 You can return a book by using it's id.
 
++ Request (application/json)
+
+     Headers
+
+        Authorization: Bearer JWT Token
+
 + Response 200 (application/json)
 
         {
@@ -665,6 +671,37 @@ You can return a book by using it's id.
             "message": "book not found",
             "status": "error"
         }
+
+### User Borrw Book History [GET]
+You can get all the books the user has borrowed before.
+
++ Request (application/json)
+
+     Headers
+
+        Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "books": [
+                {
+                    "date_created": "Sat, 16 Jun 2018 14:08:36 GMT",
+                    "date_modified": "Sun, 17 Jun 2018 08:18:17 GMT",
+                    "id": 1,
+                    "isbn": "7815455595",
+                    "title": "ola"
+                }
+            ]
+        }
+
++ Response 401 (application/json)
+
+        {
+            "message": "Token is missing",
+            "status": "failed"
+        }
+
 
 # Data Structures
 
