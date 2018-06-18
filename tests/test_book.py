@@ -363,6 +363,75 @@ class TestBookMethods(BaseTestCase):
 		self.assertTrue(book_res['error'] == 'forbidden')
 		self.assertTrue(book.status_code == 403)
 
+	def test_get_all_books(self):
+		"""test api can return books from the database"""
+
+		# create book
+		add_book = {
+			'title': 'Hello Books',
+			'isbn': '5698745124'
+		}
+		login_data = self.register_and_login_in_user()
+		token = login_data['auth_token']
+		res = self.client.post(
+			'/api/v2/books',
+			headers=dict(Authorization=f'Bearer {token}'),
+			content_type='application/json',
+			data=json.dumps(add_book)
+		)
+		res2 = json.loads(res.data.decode())
+		self.assertIn('success', str(res2))
+
+		res = self.client.get(
+			'/api/v2/books',
+			headers=dict(Authorization=f'Bearer {token}'))
+
+		self.assertIn('hello books', str(res.data))
+
+	def test_get_all_books_with_pagination(self):
+		"""test api can return books from the database with pagination"""
+
+		login_data = self.register_and_login_in_user()
+		token = login_data['auth_token']
+		res = self.client.get(
+			'/api/v2/books?limit=1&page=1',
+			headers=dict(Authorization=f'Bearer {token}'))
+
+		pagination = json.loads(res.data.decode())
+		self.assertTrue(pagination['current_page'] == 1)
+		self.assertTrue(pagination['pages'] == 0)
+
+	def test_delete_book(self):
+		"""test api can delete book with id"""
+
+		# create book
+		add_book = {
+			'title': 'Hello Books',
+			'isbn': '5698745124'
+		}
+
+		login_data = self.register_and_login_in_user()
+		token = login_data['auth_token']
+		res = self.client.post(
+			'/api/v2/books',
+			headers=dict(Authorization=f'Bearer {token}'),
+			content_type='application/json',
+			data=json.dumps(add_book)
+		)
+
+		res2 = json.loads(res.data.decode())
+		self.assertIn('success', str(res2))
+
+		# delete book
+
+		del_book = self.client.delete(
+			'/api/v2/books/1',
+			headers=dict(Authorization=f'Bearer {token}')
+		)
+
+		res3 = json.loads(del_book.data.decode())
+		self.assertTrue(res3['message'] == 'book with id 1 has been deleted')
+
 	# useful functions
 	def register_user(self, username, email, password, is_admin):
 		"""
@@ -373,6 +442,28 @@ class TestBookMethods(BaseTestCase):
 			'/api/v2/auth/register',
 			content_type='application/json',
 			data=json.dumps(dict(username=username, email=email, password=password, is_admin=is_admin)))
+
+	def login_and_add_book(self):
+		"""
+		this will login and create a book
+		:return:
+		"""
+		# create book
+		add_book = {
+			'title': 'Hello Books',
+			'isbn': '5698745124'
+		}
+
+		login_data = self.register_and_login_in_user()
+		token = login_data['auth_token']
+		res = self.client.post(
+			'/api/v2/books',
+			headers=dict(Authorization=f'Bearer {token}'),
+			content_type='application/json',
+			data=json.dumps(add_book)
+		)
+
+		return res
 
 	def register_and_login_in_user(self):
 		"""
