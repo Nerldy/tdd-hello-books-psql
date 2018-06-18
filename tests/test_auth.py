@@ -100,7 +100,7 @@ class TestAuthBlueprint(BaseTestCase):
 				content_type='text'
 			)
 
-			self.assertEqual(res.status_code, 202)
+			self.assertEqual(res.status_code, 400)
 			self.assertIn('content-type must be json', str(res.data))
 
 	def test_user_can_logout(self):
