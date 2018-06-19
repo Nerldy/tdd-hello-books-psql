@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/Nerldy/tdd-hello-books-psql.svg?branch=master)](https://travis-ci.org/Nerldy/tdd-hello-books-psql)
 [![codecov](https://codecov.io/gh/Nerldy/tdd-hello-books-psql/branch/master/graph/badge.svg)](https://codecov.io/gh/Nerldy/tdd-hello-books-psql)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ad70fa5a66f80b893ff7/maintainability)](https://codeclimate.com/github/Nerldy/tdd-hello-books-psql/maintainability)
 # HELLO BOOKS APP
 Hello-Books is a simple application that helps manage a library and its processes like stocking, tracking and renting books. With this application users are able to find and rent books. The application also has an admin section where the admin can do things like add books, delete books, increase the quantity of a book etc
 
