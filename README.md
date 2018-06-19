@@ -45,3 +45,5 @@ https://tddhellobookspsql.docs.apiary.io/#
 | DELETE /api/v2/books/{book_id}                 | Delete a single book with id. Id must be integer |
 | POST /api/v2/users/books/{book_id}             | User borrow book with id. Id must be integer     |
 | PUT /api/v2/users/books/{book_id}              | User return book with id. Id must be integer     |
+
+__NOTE:__ Only the admin can perform *__CRUD__* functions. If you want to to be able to perform these functions, when registering a user make sure they have a **is_admin: true** property in the JSON.
