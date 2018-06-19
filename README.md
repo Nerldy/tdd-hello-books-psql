@@ -38,7 +38,7 @@ https://tddhellobookspsql.docs.apiary.io/#
 | POST /api/v2/books                             | Create book                                      |
 | GET /api/v2/books                              | Get all books                                    |
 | GET /api/v2/books?limit=1&page=1               | Get books with pagination                        |
-| GET /api/v2/books?limi=1&page=1&returned=false | Get books not yet returned                       |
+| GET /api/v2/users/books?limi=1&page=1&returned=false | Get books not yet returned by the borrower                       |
 | PUT /api/v2/books/{book_id}                    | Update book with id. Id must be integer          |
 | GET /api/v2/users/books                        | Get history of books borrowed                    |
 | GET /api/v2/books/{book_id}                    | Get a single book with id. Id must be integer    |
