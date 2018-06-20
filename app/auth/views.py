@@ -5,7 +5,7 @@ from app.auth.helper_funcs import response, response_auth, token_required, forma
 from sqlalchemy import exc
 from cerberus import Validator
 from app import db
-import json
+import re
 
 auth = Blueprint('auth', __name__)
 
@@ -34,21 +34,20 @@ user_schema = {
 	'email': {
 		'type': 'string',
 		'required': True,
-		'regex': '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$',
 		'maxlength': 100
 	},
 	'password': {
 		'type': 'string',
 		'required': True,
-		'minlength': 8,
-		'regex': '(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'
-
+		# 'regex': "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$"
 	},
 	'is_admin': {
 		'type': 'boolean',
 		'required': False
 	}
 }
+# def validate_password(field, value, error):
+
 
 reset_password_schema = {
 	'old_password': {
@@ -60,8 +59,7 @@ reset_password_schema = {
 
 		'type': 'string',
 		'required': True,
-		'minlength': 8,
-		'regex': '(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'
+		# 'regex': '(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'
 	}
 }
 
@@ -85,6 +83,16 @@ class RegisterUser(MethodView):
 				email = post_data.get('email')
 				password = post_data.get('password')
 
+				# validate if email matches the standard
+				validate_email = re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
+				if validate_email is None:
+					return response('error', "email format must have a local part, the “@” symbol, and the domain", 400)
+
+				# validate if password matches the standard
+				validate_password = re.match(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$", password)
+				if validate_password is None:
+					return response('error', "password must have eight characters, at least one letter, one number and one special character", 400)
+
 				user = User.get_by_email(email)
 
 				if not user:
@@ -103,12 +111,6 @@ class RegisterUser(MethodView):
 					return response_auth('success', 'successfully registered', token, 201)
 				else:
 					return response('error', 'user already exists, please sign in', 400)
-
-			print(validate_user_schema.errors)
-			print(isinstance(validate_user_schema.errors, dict))
-			del validate_user_schema.errors['password']
-			validate_user_schema.errors['password'] = "Koool"
-			print(validate_user_schema.errors)
 
 			return response('error', validate_user_schema.errors, 400)
 		return response('error', 'content-type must be json format', 400)
@@ -167,6 +169,11 @@ def reset_password(current_user):
 		if validate_reset_password_schema.validate(data):
 			old_password = data.get('old_password')
 			new_password = data.get('new_password')
+
+			# validate if new_password matches the standard
+			validate_password = re.match(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$", new_password)
+			if validate_password is None:
+				return response('error', "new password must have eight characters, at least one letter, one number and one special character", 400)
 
 			# check if old password match. If they do, update password
 			if current_user.verify_password(old_password):
