@@ -5,6 +5,7 @@ from app.auth.helper_funcs import response, response_auth, token_required, forma
 from sqlalchemy import exc
 from cerberus import Validator
 from app import db
+import json
 
 auth = Blueprint('auth', __name__)
 
@@ -96,11 +97,18 @@ class RegisterUser(MethodView):
 					if 'is_admin' in post_data:
 						new_user.is_admin = post_data['is_admin']
 
+					# create token
 					token = new_user.save()
 
 					return response_auth('success', 'successfully registered', token, 201)
 				else:
 					return response('error', 'user already exists, please sign in', 400)
+
+			print(validate_user_schema.errors)
+			print(isinstance(validate_user_schema.errors, dict))
+			del validate_user_schema.errors['password']
+			validate_user_schema.errors['password'] = "Koool"
+			print(validate_user_schema.errors)
 
 			return response('error', validate_user_schema.errors, 400)
 		return response('error', 'content-type must be json format', 400)
@@ -164,6 +172,12 @@ def reset_password(current_user):
 			if current_user.verify_password(old_password):
 				current_user.password = new_password
 				current_user.save()
+
+				# log out user
+				auth_header = request.headers.get('Authorization')
+				auth_token = auth_header.split(" ")[1]
+				token = BlacklistToken(token=auth_token)
+				token.blacklist()
 				return response('success', 'password reset successful', 200)
 			return response('error', "password don't match", 401)
 

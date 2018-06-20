@@ -134,7 +134,7 @@ def api_create_book(current_user):
 				return response('error', 'isbn must only include numbers', 400)
 
 			except Exception as e:
-				return response('error', str(e), 400)
+				return response('error', "book already exists", 400)
 
 		return response('error', validate_book_schema.errors, 400)
 
