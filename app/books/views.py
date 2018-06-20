@@ -1,5 +1,4 @@
 from flask import Blueprint, request, abort, make_response, jsonify
-from app.books.helper_funcs import check_admin
 from app.auth.helper_funcs import token_required, format_inputs
 from app.models import Book, User
 from app.books.helper_funcs import check_admin, response, response_for_book, response_for_created_book, response_with_pagination, get_user_book_list
@@ -134,7 +133,7 @@ def api_create_book(current_user):
 				return response('error', 'isbn must only include numbers', 400)
 
 			except Exception as e:
-				return response('error', "book already exists", 400)
+				return response('error', f"book with ISBN no.{isbn} already exists", 400)
 
 		return response('error', validate_book_schema.errors, 400)
 
