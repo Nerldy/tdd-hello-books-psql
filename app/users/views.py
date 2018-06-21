@@ -33,16 +33,16 @@ validate_pagination_schema = Validator(pagination_schema)
 
 @users.route('')
 @token_required
-def api_books_not_returned(current_user):
+def api_books_not_returned_or_history(current_user):
 	"""
-	handles books not returned by user
+	handles books not returned by user or books borrowed history
 	:param current_user:
 	:return:
 	"""
 
 	req_args = request.args
 
-	# check if args exists
+	# check if args exists. This will deal with books not returned
 	if req_args:
 		if validate_pagination_schema.validate(req_args) and req_args.get('returned') == 'false':
 			try:
@@ -62,6 +62,7 @@ def api_books_not_returned(current_user):
 					).all()
 
 				else:
+					# find the book in the borrowed book table
 					borrowed_books = BorrowedBook.query.filter(
 						db.and_(
 							BorrowedBook.return_date == None,
@@ -71,11 +72,17 @@ def api_books_not_returned(current_user):
 
 				books_list = []
 
+				# match all the books borrowed ID's to the books table
 				for single_book in borrowed_books:
-					match_book = Book.query.filter_by(id=single_book.id).first()
+					match_book = Book.query.filter_by(id=single_book.book_id).first()
 					books_list.append(match_book)
 
+				# serialize the results
 				book_results = get_user_book_list(books_list)
+
+				# check if book_results is empty return 204
+				if len(book_results) < 1:
+					return make_response(jsonify({'': ''})), 204
 
 				return make_response(
 					jsonify({
@@ -86,16 +93,17 @@ def api_books_not_returned(current_user):
 				return make_response(
 					jsonify(
 						{
-							'error': str(e)
+							# 'error': str(e)
+							'error': "something went wrong"
 						}
 					)
 				), 400
 
 		return make_response(jsonify({'error': validate_pagination_schema.errors})), 400
 
-	else:
+	else:  # find user's book borrowing history
 		try:
-
+			# query for all borrowed books history
 			borrowed_books = BorrowedBook.query.filter(
 				db.and_(
 					BorrowedBook.return_date != None,
@@ -107,10 +115,14 @@ def api_books_not_returned(current_user):
 
 			for single_book in borrowed_books:
 				print(single_book)
-				match_book = Book.query.filter_by(id=single_book.id).first()
+				match_book = Book.query.filter_by(id=single_book.book_id).first()
 				books_list.append(match_book)
 
 			book_results = get_user_book_list(books_list)
+
+			# check if book_results is empty return 204
+			if len(book_results) < 1:
+				return make_response(jsonify({'': ''})), 204
 
 			return make_response(
 				jsonify({
@@ -146,11 +158,11 @@ def api_borrow_book(current_user, book_id):
 
 		# if book doesn't exists return 404
 		if not book_instance:
-			return response('error', "book not found", 404)
+			return response('error', f"book with ID {book_id} not found", 404)
 
 		# check if book is borrowed
 		if book_instance.is_borrowed:
-			return response('message', f'book with id {book_id} is currently unavailable', 400)
+			return response('message', f'book with ID no.{book_id} is currently unavailable', 400)
 
 		# if book exists user can borrow it
 		borrow_book = BorrowedBook()
@@ -162,7 +174,7 @@ def api_borrow_book(current_user, book_id):
 		db.session.add(borrow_book)
 		db.session.commit()
 
-		return response('success', 'book has been borrowed', 200)
+		return response('success', f'book with ID no.{book_id} has been borrowed', 200)
 
 
 @users.route('/<book_id>', methods=['PUT'])
