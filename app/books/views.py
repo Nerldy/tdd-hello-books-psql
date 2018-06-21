@@ -72,6 +72,9 @@ def api_get_all_books(current_user):
 
 				books_result = get_user_book_list(book_pagination.items)
 
+				if books_result:
+					return 204
+
 				return make_response(
 					jsonify({
 						'current_page': book_pagination.page,
