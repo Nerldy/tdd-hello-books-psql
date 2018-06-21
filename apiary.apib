@@ -81,8 +81,8 @@ The email must be in the format (something@something.something)
 ## Login [/api/v2/auth/login]
 
 ### Login user [POST]
-Login user by sending **username, email** and **password**.
-If any of these fields misses or an uknown field is added it will return an error.
+Login user by sending **username** and **password**.
+If any of these fields misses or an unknown field is added it will return an error.
 
 If everything is right it will return a token as __auth_token__ that you will need for any authentication usage.
 
@@ -90,7 +90,6 @@ If everything is right it will return a token as __auth_token__ that you will ne
 
          {
             "username": "admin1",
-            "email": "admin1@mail.com",
             "password": "ADMINlogin#password123"
         }
 
