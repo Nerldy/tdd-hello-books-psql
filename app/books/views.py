@@ -72,9 +72,6 @@ def api_get_all_books(current_user):
 
 				books_result = get_user_book_list(book_pagination.items)
 
-				if books_result:
-					return 204
-
 				return make_response(
 					jsonify({
 						'current_page': book_pagination.page,
@@ -96,6 +93,10 @@ def api_get_all_books(current_user):
 	for single_book in all_books:
 		book_obj = single_book.serialize()
 		books_result.append(book_obj)
+
+	# check if books_result is empty and return 204
+	if len(books_result) < 1:
+		return make_response(jsonify({'': ''})), 204
 
 	return make_response(
 		jsonify(
