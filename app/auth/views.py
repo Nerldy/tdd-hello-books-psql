@@ -14,10 +14,6 @@ login_schema = {
 		'type': 'string',
 		'required': True
 	},
-	'email': {
-		'type': 'string',
-		'required': True
-	},
 	'password': {
 		'type': 'string',
 		'required': True,
@@ -125,10 +121,9 @@ class LoginUser(MethodView):
 
 			if validate_login_schema.validate(post_data):
 				username = post_data.get('username')
-				email = post_data.get('email')
 				password = post_data.get('password')
 
-				user = User.query.filter(db.and_(User.username == username, User.email == email)).first()
+				user = User.query.filter(User.username == username).first()
 
 				if user and user.verify_password(password):
 					return response_auth('success', 'successfully logged in', user.generate_token(user.id), 200)
