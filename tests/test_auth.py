@@ -81,6 +81,7 @@ class TestAuthBlueprint(BaseTestCase):
 			)
 
 			data = json.loads(res.data.decode())
+			print(data)
 			self.assertEqual(res.status_code, 401)
 			self.assertIn('error', str(data))
 
