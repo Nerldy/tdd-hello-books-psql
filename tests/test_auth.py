@@ -82,8 +82,9 @@ class TestAuthBlueprint(BaseTestCase):
 			)
 
 			data = json.loads(res.data.decode())
+			print(data)
 			self.assertEqual(res.status_code, 401)
-			self.assertIn('required field', str(data))
+			self.assertIn('error', str(data))
 
 	def test_json_not_detected(self):
 		"""test api has no json"""
