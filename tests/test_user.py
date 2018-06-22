@@ -31,7 +31,7 @@ class TestUserCases(BaseTestCase):
 		)
 
 		borrow_book = json.loads(res3.data.decode())
-		self.assertTrue(borrow_book['message'] == 'book has been borrowed')
+		self.assertTrue(borrow_book['message'] == 'book with ID no.1 has been borrowed')
 
 		# get book not returned
 		res4 = self.client.get(
@@ -47,7 +47,7 @@ class TestUserCases(BaseTestCase):
 		Helper method to sign up and login a user
 		:return: Json login response
 		"""
-		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'harderTHAN.Ev37', True)
+		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', True)
 		data = json.loads(reg_user.data.decode())
 		self.assertEqual(reg_user.status_code, 201)
 		self.assertIn('successfully registered', str(data))
@@ -58,8 +58,7 @@ class TestUserCases(BaseTestCase):
 			data=json.dumps(
 				dict(
 					username='lilbaby',
-					email='lilb@mail.com',
-					password='harderTHAN.Ev37'
+					password='test#op3456'
 				)
 			),
 			content_type='application/json'

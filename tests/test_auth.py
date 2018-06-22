@@ -56,8 +56,7 @@ class TestAuthBlueprint(BaseTestCase):
 				data=json.dumps(
 					dict(
 						username='lilbaby',
-						email='lilb@mail.com',
-						password='harderTHAN.Ev37'
+						password='test#op3456'
 					)
 				),
 				content_type='application/json'
@@ -83,7 +82,7 @@ class TestAuthBlueprint(BaseTestCase):
 
 			data = json.loads(res.data.decode())
 			self.assertEqual(res.status_code, 401)
-			self.assertIn('required field', str(data))
+			self.assertIn('error', str(data))
 
 	def test_json_not_detected(self):
 		"""test api has no json"""
@@ -135,6 +134,7 @@ class TestAuthBlueprint(BaseTestCase):
 			response = self.client.post(
 				'/api/v2/auth/logout',
 			)
+
 			data = json.loads(response.data.decode())
 			self.assertTrue(data['status'] == 'error')
 			self.assertIn('provide an Authorization header', str(data))
@@ -169,7 +169,7 @@ class TestAuthBlueprint(BaseTestCase):
 				content_type='application/json',
 				data=json.dumps(
 					dict(
-						old_password='harderTHAN.Ev37',
+						old_password='test#op3456',
 						new_password='newPassword##popa985'
 					)
 				)
@@ -189,7 +189,7 @@ class TestAuthBlueprint(BaseTestCase):
 				content_type='application/json',
 				data=json.dumps(
 					dict(
-						old_password='hardp96THAN.Ev37',
+						old_password='ppp',
 						new_password='newPassword##popa985'
 					)
 				)
@@ -209,7 +209,7 @@ class TestAuthBlueprint(BaseTestCase):
 				content_type='text/html',
 				data=json.dumps(
 					dict(
-						old_password='hardp96THAN.Ev37',
+						old_password='test#op3456',
 						new_password='newPassword##popa985'
 					)
 				)
@@ -257,7 +257,7 @@ class TestAuthBlueprint(BaseTestCase):
 		Helper method to sign up and login a user
 		:return: Json login response
 		"""
-		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'harderTHAN.Ev37', False)
+		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', False)
 		data = json.loads(reg_user.data.decode())
 		self.assertEqual(reg_user.status_code, 201)
 		self.assertIn('successfully registered', str(data))
@@ -268,8 +268,7 @@ class TestAuthBlueprint(BaseTestCase):
 			data=json.dumps(
 				dict(
 					username='lilbaby',
-					email='lilb@mail.com',
-					password='harderTHAN.Ev37'
+					password='test#op3456'
 				)
 			),
 			content_type='application/json'
