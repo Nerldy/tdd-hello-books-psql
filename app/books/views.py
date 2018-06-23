@@ -1,7 +1,7 @@
 from flask import Blueprint, request, abort, make_response, jsonify
 from app.auth.helper_funcs import token_required, format_inputs
 from app.models import Book, User
-from app.books.helper_funcs import check_admin, response, response_for_book, response_for_created_book, response_with_pagination, get_user_book_list
+from app.books.helper_funcs import check_admin, response, response_for_book, response_for_created_book, response_with_pagination, get_user_book_list, get_paginated_list
 from cerberus import Validator
 
 # schemas
@@ -61,24 +61,28 @@ def api_get_all_books(current_user):
 	if req_args:
 		if validate_pagination_schema.validate(req_args):
 			try:
-				page_limit = int(request.args.get('limit'))
-				page_number = int(request.args.get('page'))
+				page_limit = request.args.get('limit', None, int)
+				page_number = request.args.get('page', None, int)
 
-				book_pagination = Book.query.paginate(
-					per_page=page_limit,
-					page=page_number,
-					error_out=True
-				)
-
-				books_result = get_user_book_list(book_pagination.items)
+				# make sure both limit and page are integers
+				if isinstance(page_number, int) and isinstance(page_limit, int):
+					return make_response(
+						jsonify(
+							get_paginated_list(
+								get_user_book_list(Book.get_all()),
+								'/api/v2/books',
+								start=page_number,
+								limit=page_limit
+							)
+						)
+					)
 
 				return make_response(
-					jsonify({
-						'current_page': book_pagination.page,
-						'pages': book_pagination.pages,
-						"books": books_result
-					})
-				)
+					jsonify(
+						{'error': "page and limit args must be integers"}
+					)
+				), 400
+
 			except Exception as e:
 				return make_response(
 					jsonify(
