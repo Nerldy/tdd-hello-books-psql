@@ -106,17 +106,17 @@ def get_paginated_list(books, url, start, limit):
 	else:
 		start_copy = max(1, start - limit)
 		limit_copy = start - 1
-		obj['previous'] = url + f'?start={start_copy}&limit={limit_copy}'
+		obj['previous'] = url + f'?page={start_copy}&limit={limit_copy}'
 
 	# make next url
 	if start + limit > count:
 		obj['next'] = ''
 	else:
 		start_copy = start + limit
-		obj['next'] = url + f'?start={start_copy}&limit={limit}'
+		obj['next'] = url + f'?page={start_copy}&limit={limit}'
 
 	# finally extract result according to bounds
-	obj['results'] = results[(start - 1):(start - 1 + limit)]
+	obj['books'] = results[(start - 1):(start - 1 + limit)]
 	return obj
 
 
