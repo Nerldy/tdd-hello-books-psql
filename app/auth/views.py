@@ -34,16 +34,17 @@ user_schema = {
 	},
 	'password': {
 		'type': 'string',
+		'required': True
+	},
+	'confirm_password': {
+		'type': 'string',
 		'required': True,
-		# 'regex': "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$"
 	},
 	'is_admin': {
 		'type': 'boolean',
 		'required': False
 	}
 }
-# def validate_password(field, value, error):
-
 
 reset_password_schema = {
 	'old_password': {
@@ -54,8 +55,7 @@ reset_password_schema = {
 	'new_password': {
 
 		'type': 'string',
-		'required': True,
-		# 'regex': '(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$'
+		'required': True
 	}
 }
 
@@ -78,6 +78,7 @@ class RegisterUser(MethodView):
 				username = post_data.get('username')
 				email = post_data.get('email')
 				password = post_data.get('password')
+				confirm_password = post_data.get('confirm_password')
 
 				# validate if email matches the standard
 				validate_email = re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
@@ -88,6 +89,10 @@ class RegisterUser(MethodView):
 				validate_password = re.match(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$", password)
 				if validate_password is None:
 					return response('error', "password must have eight characters, at least one letter, one number and one special character", 400)
+
+				# confirm password match
+				if password != confirm_password:
+					return response('error', 'password don\'t match', 400)
 
 				user = User.get_by_email(email)
 
