@@ -76,9 +76,53 @@ def get_user_book_list(books_list):
 	return books
 
 
+def get_paginated_list(books, url, start, limit):
+	"""
+	returns a paginated list of books
+	:param books:
+	:param url:
+	:param start:
+	:param limit:
+	:return:
+	"""
+	results = books
+	count = len(results)
+	if count < start:
+		abort(404)
+
+	# make response
+	obj = {
+		'start': start,
+		'limit': limit,
+		'count': count
+	}
+
+	# make URLs
+
+	# make previous url
+	if start == 1:
+		obj['previous'] = ''
+
+	else:
+		start_copy = max(1, start - limit)
+		limit_copy = start - 1
+		obj['previous'] = url + f'?start={start_copy}&limit={limit_copy}'
+
+	# make next url
+	if start + limit > count:
+		obj['next'] = ''
+	else:
+		start_copy = start + limit
+		obj['next'] = url + f'?start={start_copy}&limit={limit}'
+
+	# finally extract result according to bounds
+	obj['results'] = results[(start - 1):(start - 1 + limit)]
+	return obj
+
+
 def response_with_pagination(books, previous_page, next_page, count):
 	"""
-	make http response for books
+	make http response for books with pagination
 	:param books:
 	:param previous_page:
 	:param next_page:
