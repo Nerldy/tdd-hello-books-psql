@@ -328,7 +328,7 @@ class TestBookMethods(BaseTestCase):
 		"""test API is not admin"""
 
 		# register the user
-		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', False)
+		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456', False)
 		data = json.loads(reg_user.data.decode())
 		self.assertEqual(reg_user.status_code, 201)
 		self.assertIn('successfully registered', str(data))
@@ -417,7 +417,6 @@ class TestBookMethods(BaseTestCase):
 		self.assertTrue(pagination['limit'] == 1)
 		self.assertTrue(pagination['start'] == 1)
 
-
 	def test_delete_book(self):
 		"""test api can delete book with id"""
 
@@ -450,7 +449,7 @@ class TestBookMethods(BaseTestCase):
 		self.assertTrue(res3['message'] == 'book with id 1 has been deleted')
 
 	# useful functions
-	def register_user(self, username, email, password, is_admin):
+	def register_user(self, username, email, password, confirm_password, is_admin):
 		"""
 		Helper method for registering a user with dummy data
 		:return:
@@ -458,7 +457,7 @@ class TestBookMethods(BaseTestCase):
 		return self.client.post(
 			'/api/v2/auth/register',
 			content_type='application/json',
-			data=json.dumps(dict(username=username, email=email, password=password, is_admin=is_admin)))
+			data=json.dumps(dict(username=username, email=email, password=password, confirm_password=confirm_password, is_admin=is_admin)))
 
 	def login_and_add_book(self):
 		"""
@@ -487,7 +486,7 @@ class TestBookMethods(BaseTestCase):
 		Helper method to sign up and login a user
 		:return: Json login response
 		"""
-		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', True)
+		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456', True)
 		data = json.loads(reg_user.data.decode())
 		self.assertEqual(reg_user.status_code, 201)
 		self.assertIn('successfully registered', str(data))

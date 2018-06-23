@@ -47,7 +47,7 @@ class TestUserCases(BaseTestCase):
 		Helper method to sign up and login a user
 		:return: Json login response
 		"""
-		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', True)
+		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456', True)
 		data = json.loads(reg_user.data.decode())
 		self.assertEqual(reg_user.status_code, 201)
 		self.assertIn('successfully registered', str(data))

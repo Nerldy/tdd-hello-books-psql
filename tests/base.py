@@ -24,7 +24,7 @@ class BaseTestCase(TestCase):
 		db.session.remove()
 		db.drop_all()
 
-	def register_user(self, username, email, password, is_admin):
+	def register_user(self, username, email, password, confirm_password, is_admin):
 		"""
 		Helper method for registering a user with dummy data
 		:return:
@@ -32,7 +32,7 @@ class BaseTestCase(TestCase):
 		return self.client.post(
 			'/api/v2/auth/register',
 			content_type='application/json',
-			data=json.dumps(dict(username=username, email=email, password=password, is_admin=is_admin)))
+			data=json.dumps(dict(username=username, email=email, password=password, confirm_password=confirm_password, is_admin=is_admin)))
 
 	def get_user_token(self):
 		"""
