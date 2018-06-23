@@ -390,15 +390,33 @@ class TestBookMethods(BaseTestCase):
 	def test_get_all_books_with_pagination(self):
 		"""test api can return books from the database with pagination"""
 
+		# create book
+		add_book = {
+			'title': 'Hello Books',
+			'isbn': '5698745124'
+		}
+
 		login_data = self.register_and_login_in_user()
 		token = login_data['auth_token']
+		res = self.client.post(
+			'/api/v2/books',
+			headers=dict(Authorization=f'Bearer {token}'),
+			content_type='application/json',
+			data=json.dumps(add_book)
+		)
+		res2 = json.loads(res.data.decode())
+		self.assertIn('success', str(res2))
+
+		# get books
 		res = self.client.get(
 			'/api/v2/books?limit=1&page=1',
 			headers=dict(Authorization=f'Bearer {token}'))
 
 		pagination = json.loads(res.data.decode())
-		self.assertTrue(pagination['current_page'] == 1)
-		self.assertTrue(pagination['pages'] == 0)
+		self.assertTrue(pagination['count'] == 1)
+		self.assertTrue(pagination['limit'] == 1)
+		self.assertTrue(pagination['start'] == 1)
+
 
 	def test_delete_book(self):
 		"""test api can delete book with id"""
