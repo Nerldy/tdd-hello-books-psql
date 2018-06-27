@@ -301,6 +301,8 @@ Admin can add a new book.
             "status": "success"
         }
 
++ Response 204 (application/json)
+
 + Response 400 (application/json)
 
         {
@@ -391,16 +393,19 @@ Get all books in the database. The results can be paginated with **limit** and *
         {
             "books": [
                 {
-                    "date_created": "Sat, 16 Jun 2018 14:08:36 GMT",
-                    "date_modified": "Sat, 16 Jun 2018 14:08:36 GMT",
-                    "id": 1,
-                    "isbn": "1234567890",
-                    "title": "hello books"
+                    "date_created": "Mon, 25 Jun 2018 14:23:40 GMT",
+                    "date_modified": "Mon, 25 Jun 2018 14:27:02 GMT",
+                    "id": 11,
+                    "isbn": "1234567896",
+                    "title": "hello book"
                 }
             ],
-            "current_page": 1,
-            "pages": 1
-        }
+            "count": 1,
+            "limit": 2,
+            "next": "",
+            "previous": "",
+            "start": 1
+}
 
 + Response 400 (application/json)
 
