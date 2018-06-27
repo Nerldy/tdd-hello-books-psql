@@ -103,8 +103,6 @@ class RegisterUser(MethodView):
 						email=email
 					)
 
-					if 'is_admin' in post_data:
-						new_user.is_admin = post_data['is_admin']
 
 					# create token
 					token = new_user.save()
