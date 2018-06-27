@@ -6,31 +6,6 @@ import getpass
 from app.auth.helper_funcs import format_inputs
 import re
 
-admin_user_schema = {
-	'username': {
-		'type': 'string',
-		'required': True,
-		'minlength': 2
-	},
-	'email': {
-		'type': 'string',
-		'required': True,
-		'maxlength': 100
-	},
-	'password': {
-		'type': 'string',
-		'required': True
-	},
-	'confirm_password': {
-		'type': 'string',
-		'required': True,
-	},
-	'is_admin': {
-		'type': 'boolean',
-		'required': True
-	}
-}
-
 # Initializing the manager
 manager = Manager(app)
 
@@ -77,6 +52,26 @@ def create_admin():
 		return print(f'Admin {username} successfully created')
 	except Exception as e:
 		print(e)
+
+
+@manager.command
+def super_duper_user():
+	"""promotes user to admin or downgrades admin to user """
+
+	user_email = input('Enter username email you want to switch: ')
+	find_user = User.get_by_email(user_email)
+
+	if find_user:
+		change_user = input('press 1 to upgrade user to admin or press 2 to demote admin to user: ')
+		if int(change_user) == 1:
+			find_user.is_admin = True
+			db.session.commit()
+			return print('user upgraded')
+		if int(change_user) == 2:
+			find_user.is_admin = False
+			db.session.commit()
+			return print('user downgraded')
+		return print('You did not press 1 or 2')
 
 
 # Run the manager
