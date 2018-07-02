@@ -2,6 +2,8 @@ from tests.base import BaseTestCase
 import json
 
 URL_BOOKS = '/api/v2/books'
+URL_AUTH = '/api/v2/auth/'
+
 
 class TestBookMethods(BaseTestCase):
 	"""test books methods and views"""
@@ -124,8 +126,6 @@ class TestBookMethods(BaseTestCase):
 			content_type='application/json',
 			data=json.dumps(add_book)
 		)
-		res2 = json.loads(res.data.decode())
-		self.assertIn('success', str(res2))
 
 		# get book id
 		book = self.client.get(
@@ -151,8 +151,6 @@ class TestBookMethods(BaseTestCase):
 			content_type='application/json',
 			data=json.dumps(add_book)
 		)
-		res2 = json.loads(res.data.decode())
-		self.assertIn('success', str(res2))
 
 		# get book id
 		book = self.client.get(
@@ -197,8 +195,6 @@ class TestBookMethods(BaseTestCase):
 			content_type='application/json',
 			data=json.dumps(add_book)
 		)
-		res2 = json.loads(res.data.decode())
-		self.assertIn('success', str(res2))
 
 		# update book
 		book = self.client.put(
@@ -231,9 +227,6 @@ class TestBookMethods(BaseTestCase):
 			content_type='application/json',
 			data=json.dumps(add_book)
 		)
-		res2 = json.loads(res.data.decode())
-		self.assertIn('success', str(res2))
-
 		empty_book = {}
 		# update book
 		book = self.client.put(
@@ -264,9 +257,6 @@ class TestBookMethods(BaseTestCase):
 			content_type='application/json',
 			data=json.dumps(add_book)
 		)
-		res2 = json.loads(res.data.decode())
-		self.assertIn('success', str(res2))
-
 		# update book
 		book = self.client.put(
 			f'{URL_BOOKS}/1k',
@@ -336,7 +326,7 @@ class TestBookMethods(BaseTestCase):
 
 		# login user
 		login_res = self.client.post(
-			'/api/v2/auth/login',
+			f'{URL_AUTH}login',
 			data=json.dumps(
 				dict(
 					username='lilbaby',
@@ -367,26 +357,36 @@ class TestBookMethods(BaseTestCase):
 		"""test api can return books from the database"""
 
 		# create book
-		add_book = {
+		book_1 = {
 			'title': 'Hello Books',
 			'isbn': '5698745124'
 		}
+		book_2 = {
+			'title': 'Hello Books 2',
+			'isbn': '8765456766'
+		}
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
-		res = self.client.post(
+		post_book_1 = self.client.post(
 			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
-			data=json.dumps(add_book)
+			data=json.dumps(book_1)
 		)
-		res2 = json.loads(res.data.decode())
-		self.assertIn('success', str(res2))
+
+		post_book_2 = self.client.post(
+			f'{URL_BOOKS}',
+			headers=dict(Authorization=f'Bearer {token}'),
+			content_type='application/json',
+			data=json.dumps(book_2)
+		)
 
 		res = self.client.get(
 			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'))
 
-		self.assertIn('hello books', str(res.data))
+		res_data = json.loads(res.data.decode())
+		self.assertEqual(len(res_data.get('books')), 2)
 
 	def test_get_all_books_with_pagination(self):
 		"""test api can return books from the database with pagination"""
@@ -405,8 +405,6 @@ class TestBookMethods(BaseTestCase):
 			content_type='application/json',
 			data=json.dumps(add_book)
 		)
-		res2 = json.loads(res.data.decode())
-		self.assertIn('success', str(res2))
 
 		# get books
 		res = self.client.get(
@@ -436,11 +434,7 @@ class TestBookMethods(BaseTestCase):
 			data=json.dumps(add_book)
 		)
 
-		res2 = json.loads(res.data.decode())
-		self.assertIn('success', str(res2))
-
 		# delete book
-
 		del_book = self.client.delete(
 			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}')
@@ -456,7 +450,7 @@ class TestBookMethods(BaseTestCase):
 		:return:
 		"""
 		return self.client.post(
-			'/api/v2/auth/register',
+			f'{URL_AUTH}register',
 			content_type='application/json',
 			data=json.dumps(dict(username=username, email=email, password=password, confirm_password=confirm_password)))
 
@@ -494,7 +488,7 @@ class TestBookMethods(BaseTestCase):
 
 		# login user
 		login_res = self.client.post(
-			'/api/v2/auth/login',
+			f'{URL_AUTH}login',
 			data=json.dumps(
 				dict(
 					username='lilbaby',
@@ -510,7 +504,7 @@ class TestBookMethods(BaseTestCase):
 	def login_test_user(self):
 		# login user
 		login_res = self.client.post(
-			'/api/v2/auth/login',
+			f'{URL_AUTH}login',
 			data=json.dumps(
 				dict(
 					username='tester',
