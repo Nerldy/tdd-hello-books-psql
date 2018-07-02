@@ -1,5 +1,6 @@
 from app import app, db
 from flask_testing import TestCase
+from app.models import User
 import json
 
 
@@ -15,6 +16,13 @@ class BaseTestCase(TestCase):
 		"""
 		db.create_all()
 		db.session.commit()
+		self.test_user = User(
+			username='tester',
+			email='tester@mail.com',
+			password='tester#Password1',
+			is_admin=True
+		)
+		self.test_user.save()
 
 	def tearDown(self):
 		"""
@@ -24,7 +32,7 @@ class BaseTestCase(TestCase):
 		db.session.remove()
 		db.drop_all()
 
-	def register_user(self, username, email, password, confirm_password, is_admin):
+	def register_user(self, username, email, password, confirm_password):
 		"""
 		Helper method for registering a user with dummy data
 		:return:
@@ -32,7 +40,7 @@ class BaseTestCase(TestCase):
 		return self.client.post(
 			'/api/v2/auth/register',
 			content_type='application/json',
-			data=json.dumps(dict(username=username, email=email, password=password, confirm_password=confirm_password, is_admin=is_admin)))
+			data=json.dumps(dict(username=username, email=email, password=password, confirm_password=confirm_password)))
 
 	def get_user_token(self):
 		"""

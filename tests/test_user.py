@@ -13,7 +13,7 @@ class TestUserCases(BaseTestCase):
 			'title': 'Hello Books',
 			'isbn': '5698745124'
 		}
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -42,6 +42,22 @@ class TestUserCases(BaseTestCase):
 		self.assertIn('hello books', str(book_not_returned))
 
 	# useful functions
+	def login_test_user(self):
+		# login user
+		login_res = self.client.post(
+			'/api/v2/auth/login',
+			data=json.dumps(
+				dict(
+					username='tester',
+					password='tester#Password1'
+				)
+			),
+			content_type='application/json'
+		)
+		login_data = json.loads(login_res.data.decode())
+		self.assertIn('successfully logged in', str(login_data))
+		return login_data
+
 	def register_and_login_in_user(self):
 		"""
 		Helper method to sign up and login a user

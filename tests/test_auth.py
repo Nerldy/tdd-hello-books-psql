@@ -7,7 +7,7 @@ class TestAuthBlueprint(BaseTestCase):
 	def test_register_user(self):
 		"""test api can register user"""
 		with self.client:
-			res = self.register_user('admin2', 'admin2@mail.com', "12345678Nine#", "12345678Nine#", is_admin=True)
+			res = self.register_user('admin2', 'admin2@mail.com', "12345678Nine#", "12345678Nine#")
 			data = json.loads(res.data.decode())
 			self.assertTrue(data['status'] == 'success')
 			self.assertTrue(data['message'], 'successfully registered')
@@ -17,11 +17,11 @@ class TestAuthBlueprint(BaseTestCase):
 	def test_user_already_exists(self):
 		"""test api can't duplicate users"""
 		with self.client:
-			res = self.register_user('admin2', 'admin2@mail.com', "12345678Nine#", "12345678Nine#", is_admin=True)
+			res = self.register_user('admin2', 'admin2@mail.com', "12345678Nine#", "12345678Nine#")
 			data = json.loads(res.data.decode())
 			self.assertEqual(res.status_code, 201)
 
-			res = self.register_user('admin2', 'admin2@mail.com', "12345678Nine#", "12345678Nine#", is_admin=True)
+			res = self.register_user('admin2', 'admin2@mail.com', "12345678Nine#", "12345678Nine#")
 			data = json.loads(res.data.decode())
 			self.assertTrue(data['status'] == 'error')
 			self.assertIn('user already exists', str(data))
@@ -257,7 +257,7 @@ class TestAuthBlueprint(BaseTestCase):
 		Helper method to sign up and login a user
 		:return: Json login response
 		"""
-		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456', False)
+		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456')
 		data = json.loads(reg_user.data.decode())
 		self.assertEqual(reg_user.status_code, 201)
 		self.assertIn('successfully registered', str(data))

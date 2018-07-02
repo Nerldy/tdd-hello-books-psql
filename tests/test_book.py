@@ -20,7 +20,7 @@ class TestBookMethods(BaseTestCase):
 				'title': 'Hello Books',
 				'isbn': '5698745124'
 			}
-			login_data = self.register_and_login_in_user()
+			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
 				'/api/v2/books',
@@ -39,7 +39,7 @@ class TestBookMethods(BaseTestCase):
 				'title': 'Hello Books',
 				'isbn': '56987451'
 			}
-			login_data = self.register_and_login_in_user()
+			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
 				'/api/v2/books',
@@ -58,7 +58,7 @@ class TestBookMethods(BaseTestCase):
 				'title': 'Hello Books',
 				'isbn': '56987451Ky'
 			}
-			login_data = self.register_and_login_in_user()
+			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
 				'/api/v2/books',
@@ -77,7 +77,7 @@ class TestBookMethods(BaseTestCase):
 			add_book = {
 				'title': 'Hello Books'
 			}
-			login_data = self.register_and_login_in_user()
+			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
 				'/api/v2/books',
@@ -97,7 +97,7 @@ class TestBookMethods(BaseTestCase):
 				'title': 'Hello Books',
 				'isbn': "8985652145"
 			}
-			login_data = self.register_and_login_in_user()
+			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
 				'/api/v2/books',
@@ -115,7 +115,7 @@ class TestBookMethods(BaseTestCase):
 			'title': 'Hello Books',
 			'isbn': '5698745124'
 		}
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -142,7 +142,7 @@ class TestBookMethods(BaseTestCase):
 			'title': 'Hello Books',
 			'isbn': '5698745124'
 		}
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -188,7 +188,7 @@ class TestBookMethods(BaseTestCase):
 			'title': 'Hello Books',
 			'isbn': '5698745124'
 		}
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -222,7 +222,7 @@ class TestBookMethods(BaseTestCase):
 			'title': 'Hello Books',
 			'isbn': '5698745124'
 		}
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -255,7 +255,7 @@ class TestBookMethods(BaseTestCase):
 			'title': 'Hello Books',
 			'isbn': '5698745124'
 		}
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -284,7 +284,7 @@ class TestBookMethods(BaseTestCase):
 	def test_api_update_book_with_id_does_not_exist(self):
 		"""test API update book ID does not exist"""
 
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 
 		book = self.client.put(
@@ -305,7 +305,7 @@ class TestBookMethods(BaseTestCase):
 	def test_api_update_book_is_not_json(self):
 		"""test API update book content type is not json"""
 
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 
 		book = self.client.put(
@@ -328,7 +328,7 @@ class TestBookMethods(BaseTestCase):
 		"""test API is not admin"""
 
 		# register the user
-		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456', False)
+		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456')
 		data = json.loads(reg_user.data.decode())
 		self.assertEqual(reg_user.status_code, 201)
 		self.assertIn('successfully registered', str(data))
@@ -370,7 +370,7 @@ class TestBookMethods(BaseTestCase):
 			'title': 'Hello Books',
 			'isbn': '5698745124'
 		}
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -396,7 +396,7 @@ class TestBookMethods(BaseTestCase):
 			'isbn': '5698745124'
 		}
 
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -426,7 +426,7 @@ class TestBookMethods(BaseTestCase):
 			'isbn': '5698745124'
 		}
 
-		login_data = self.register_and_login_in_user()
+		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
 			'/api/v2/books',
@@ -449,7 +449,7 @@ class TestBookMethods(BaseTestCase):
 		self.assertTrue(res3['message'] == 'book with id 1 has been deleted')
 
 	# useful functions
-	def register_user(self, username, email, password, confirm_password, is_admin):
+	def register_user(self, username, email, password, confirm_password):
 		"""
 		Helper method for registering a user with dummy data
 		:return:
@@ -457,7 +457,7 @@ class TestBookMethods(BaseTestCase):
 		return self.client.post(
 			'/api/v2/auth/register',
 			content_type='application/json',
-			data=json.dumps(dict(username=username, email=email, password=password, confirm_password=confirm_password, is_admin=is_admin)))
+			data=json.dumps(dict(username=username, email=email, password=password, confirm_password=confirm_password)))
 
 	def login_and_add_book(self):
 		"""
@@ -486,7 +486,7 @@ class TestBookMethods(BaseTestCase):
 		Helper method to sign up and login a user
 		:return: Json login response
 		"""
-		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456', True)
+		reg_user = self.register_user('lilbaby', 'lilb@mail.com', 'test#op3456', 'test#op3456')
 		data = json.loads(reg_user.data.decode())
 		self.assertEqual(reg_user.status_code, 201)
 		self.assertIn('successfully registered', str(data))
@@ -498,6 +498,22 @@ class TestBookMethods(BaseTestCase):
 				dict(
 					username='lilbaby',
 					password='test#op3456'
+				)
+			),
+			content_type='application/json'
+		)
+		login_data = json.loads(login_res.data.decode())
+		self.assertIn('successfully logged in', str(login_data))
+		return login_data
+
+	def login_test_user(self):
+		# login user
+		login_res = self.client.post(
+			'/api/v2/auth/login',
+			data=json.dumps(
+				dict(
+					username='tester',
+					password='tester#Password1'
 				)
 			),
 			content_type='application/json'

@@ -39,10 +39,6 @@ user_schema = {
 	'confirm_password': {
 		'type': 'string',
 		'required': True,
-	},
-	'is_admin': {
-		'type': 'boolean',
-		'required': False
 	}
 }
 
@@ -102,10 +98,6 @@ class RegisterUser(MethodView):
 						password=password,
 						email=email
 					)
-
-					if 'is_admin' in post_data:
-						new_user.is_admin = post_data['is_admin']
-
 					# create token
 					token = new_user.save()
 
