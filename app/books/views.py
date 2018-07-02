@@ -121,14 +121,16 @@ def api_create_book(current_user):
 	"""
 
 	check_admin(current_user)
-	request.json['title'] = format_inputs(request.json.get('title'))
 	req_data = request.get_json()
 
 	if request.content_type == 'application/json':
 		if validate_book_schema.validate(req_data):
 			try:
-				title = req_data.get('title')
+				title = format_inputs(req_data.get('title'))
 				isbn = format_inputs(req_data.get('isbn'))
+
+				if len(title) == 0:
+					return response('error', "title cannot be empty", 400)
 
 				if len(isbn) != 10:
 					return jsonify({'error': "isbn length must be 10"}), 400
