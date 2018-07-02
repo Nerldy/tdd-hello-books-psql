@@ -76,6 +76,9 @@ class RegisterUser(MethodView):
 				password = post_data.get('password')
 				confirm_password = post_data.get('confirm_password')
 
+				if len(request.json['username']) == 0:
+					return response('error', 'username cannot be empty', 400)
+
 				# validate if email matches the standard
 				validate_email = re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
 				if validate_email is None:
@@ -161,6 +164,9 @@ def reset_password(current_user):
 		if validate_reset_password_schema.validate(data):
 			old_password = data.get('old_password')
 			new_password = data.get('new_password')
+
+			if old_password == new_password:
+				return response('error', 'old password cannot be the same as new password', 406)
 
 			# validate if new_password matches the standard
 			validate_password = re.match(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$", new_password)
