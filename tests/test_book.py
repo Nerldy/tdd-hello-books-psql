@@ -1,6 +1,7 @@
 from tests.base import BaseTestCase
 import json
 
+URL_BOOKS = '/api/v2/books'
 
 class TestBookMethods(BaseTestCase):
 	"""test books methods and views"""
@@ -23,7 +24,7 @@ class TestBookMethods(BaseTestCase):
 			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/books',
+				f'{URL_BOOKS}',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='application/json',
 				data=json.dumps(add_book)
@@ -42,7 +43,7 @@ class TestBookMethods(BaseTestCase):
 			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/books',
+				f'{URL_BOOKS}',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='application/json',
 				data=json.dumps(add_book)
@@ -61,7 +62,7 @@ class TestBookMethods(BaseTestCase):
 			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/books',
+				f'{URL_BOOKS}',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='application/json',
 				data=json.dumps(add_book)
@@ -80,7 +81,7 @@ class TestBookMethods(BaseTestCase):
 			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/books',
+				f'{URL_BOOKS}',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='application/json',
 				data=json.dumps(add_book)
@@ -100,7 +101,7 @@ class TestBookMethods(BaseTestCase):
 			login_data = self.login_test_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/books',
+				f'{URL_BOOKS}',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='text',
 				data=json.dumps(add_book)
@@ -118,7 +119,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
@@ -128,7 +129,7 @@ class TestBookMethods(BaseTestCase):
 
 		# get book id
 		book = self.client.get(
-			'/api/v2/books/1',
+			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json'
 		)
@@ -145,7 +146,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
@@ -155,7 +156,7 @@ class TestBookMethods(BaseTestCase):
 
 		# get book id
 		book = self.client.get(
-			'/api/v2/books/1p',
+			f'{URL_BOOKS}/1p',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json'
 		)
@@ -171,7 +172,7 @@ class TestBookMethods(BaseTestCase):
 
 		# get book id
 		book = self.client.get(
-			'/api/v2/books/1',
+			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json'
 		)
@@ -191,7 +192,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
@@ -201,7 +202,7 @@ class TestBookMethods(BaseTestCase):
 
 		# update book
 		book = self.client.put(
-			'/api/v2/books/1',
+			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(
@@ -225,7 +226,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
@@ -236,7 +237,7 @@ class TestBookMethods(BaseTestCase):
 		empty_book = {}
 		# update book
 		book = self.client.put(
-			'/api/v2/books/1',
+			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(
@@ -258,7 +259,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
@@ -268,7 +269,7 @@ class TestBookMethods(BaseTestCase):
 
 		# update book
 		book = self.client.put(
-			'/api/v2/books/1k',
+			f'{URL_BOOKS}/1k',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(
@@ -288,7 +289,7 @@ class TestBookMethods(BaseTestCase):
 		token = login_data['auth_token']
 
 		book = self.client.put(
-			'/api/v2/books/1',
+			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(
@@ -309,7 +310,7 @@ class TestBookMethods(BaseTestCase):
 		token = login_data['auth_token']
 
 		book = self.client.put(
-			'/api/v2/books/1',
+			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='text',
 			data=json.dumps(
@@ -348,7 +349,7 @@ class TestBookMethods(BaseTestCase):
 		token = login_data['auth_token']
 
 		book = self.client.put(
-			'/api/v2/books/1',
+			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='text',
 			data=json.dumps(
@@ -373,7 +374,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
@@ -382,7 +383,7 @@ class TestBookMethods(BaseTestCase):
 		self.assertIn('success', str(res2))
 
 		res = self.client.get(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'))
 
 		self.assertIn('hello books', str(res.data))
@@ -399,7 +400,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
@@ -409,7 +410,7 @@ class TestBookMethods(BaseTestCase):
 
 		# get books
 		res = self.client.get(
-			'/api/v2/books?limit=1&page=1',
+			f'{URL_BOOKS}?limit=1&page=1',
 			headers=dict(Authorization=f'Bearer {token}'))
 
 		pagination = json.loads(res.data.decode())
@@ -429,7 +430,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.login_test_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
@@ -441,7 +442,7 @@ class TestBookMethods(BaseTestCase):
 		# delete book
 
 		del_book = self.client.delete(
-			'/api/v2/books/1',
+			f'{URL_BOOKS}/1',
 			headers=dict(Authorization=f'Bearer {token}')
 		)
 
@@ -473,7 +474,7 @@ class TestBookMethods(BaseTestCase):
 		login_data = self.register_and_login_in_user()
 		token = login_data['auth_token']
 		res = self.client.post(
-			'/api/v2/books',
+			f'{URL_BOOKS}',
 			headers=dict(Authorization=f'Bearer {token}'),
 			content_type='application/json',
 			data=json.dumps(add_book)
