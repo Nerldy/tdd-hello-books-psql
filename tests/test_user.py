@@ -2,6 +2,7 @@ from tests.base import BaseTestCase
 import json
 
 URL_USERS = '/api/v2/users/'
+URL_AUTH = '/api/v2/auth/'
 
 
 class TestUserCases(BaseTestCase):
@@ -42,7 +43,7 @@ class TestUserCases(BaseTestCase):
 	def login_test_user(self):
 		# login user
 		login_res = self.client.post(
-			'/api/v2/auth/login',
+			f'{URL_AUTH}login',
 			data=json.dumps(
 				dict(
 					username='tester',
@@ -67,7 +68,7 @@ class TestUserCases(BaseTestCase):
 
 		# login user
 		login_res = self.client.post(
-			'/api/v2/auth/login',
+			f'{URL_AUTH}login',
 			data=json.dumps(
 				dict(
 					username='lilbaby',
