@@ -129,6 +129,9 @@ def api_create_book(current_user):
 				title = format_inputs(req_data.get('title'))
 				isbn = format_inputs(req_data.get('isbn'))
 
+				if len(title) == 0:
+					return response('error', "title cannot be empty", 400)
+
 				if len(isbn) != 10:
 					return jsonify({'error': "isbn length must be 10"}), 400
 

@@ -1,6 +1,7 @@
 from tests.base import BaseTestCase
 import json
 
+URL_AUTH = '/api/v2/auth/'
 
 class TestAuthBlueprint(BaseTestCase):
 
@@ -52,7 +53,7 @@ class TestAuthBlueprint(BaseTestCase):
 		"""test api user doesn't exist"""
 		with self.client:
 			res = self.client.post(
-				'/api/v2/auth/login',
+				f'{URL_AUTH}login',
 				data=json.dumps(
 					dict(
 						username='lilbaby',
@@ -70,7 +71,7 @@ class TestAuthBlueprint(BaseTestCase):
 		"""test api throws an error if login json validation is not correct"""
 		with self.client:
 			res = self.client.post(
-				'/api/v2/auth/login',
+				f'{URL_AUTH}login',
 				data=json.dumps(
 					dict(
 						username='lilbaby',
@@ -88,7 +89,7 @@ class TestAuthBlueprint(BaseTestCase):
 		"""test api has no json"""
 		with self.client:
 			res = self.client.post(
-				'/api/v2/auth/login',
+				f'{URL_AUTH}login',
 				data=json.dumps(
 					dict(
 						username='lilbaby',
@@ -118,7 +119,7 @@ class TestAuthBlueprint(BaseTestCase):
 		"""test api return invalid token error"""
 		with self.client:
 			res = self.client.post(
-				'/api/v2/auth/logout',
+				f'{URL_AUTH}logout',
 				headers=dict(
 					Authorization='JOASSsasas4xcdrrldd978Abm'
 				)
@@ -132,7 +133,7 @@ class TestAuthBlueprint(BaseTestCase):
 		"""test api has no authorization header"""
 		with self.client:
 			response = self.client.post(
-				'/api/v2/auth/logout',
+				f'{URL_AUTH}logout',
 			)
 
 			data = json.loads(response.data.decode())
@@ -164,7 +165,7 @@ class TestAuthBlueprint(BaseTestCase):
 			login_data = self.register_and_login_in_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/auth/reset-password',
+				f'{URL_AUTH}reset-password',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='application/json',
 				data=json.dumps(
@@ -184,7 +185,7 @@ class TestAuthBlueprint(BaseTestCase):
 			login_data = self.register_and_login_in_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/auth/reset-password',
+				f'{URL_AUTH}reset-password',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='application/json',
 				data=json.dumps(
@@ -204,7 +205,7 @@ class TestAuthBlueprint(BaseTestCase):
 			login_data = self.register_and_login_in_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/auth/reset-password',
+				f'{URL_AUTH}reset-password',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='text/html',
 				data=json.dumps(
@@ -224,7 +225,7 @@ class TestAuthBlueprint(BaseTestCase):
 			login_data = self.register_and_login_in_user()
 			token = login_data['auth_token']
 			res = self.client.post(
-				'/api/v2/auth/reset-password',
+				f'{URL_AUTH}reset-password',
 				headers=dict(Authorization=f'Bearer {token}'),
 				content_type='application/json',
 				data=json.dumps(
@@ -241,14 +242,14 @@ class TestAuthBlueprint(BaseTestCase):
 	def register_wrong_content_type(self, username, email, password):
 		"""this function uses content-type: text"""
 		return self.client.post(
-			'/api/v2/auth/register',
+			f'{URL_AUTH}register',
 			content_type='text',
 			data=json.dumps(dict(username=username, email=email, password=password)))
 
 	def register_does_not_have_needed_properties(self, username, email):
 		"""this function does not include password property"""
 		return self.client.post(
-			'/api/v2/auth/register',
+			f'{URL_AUTH}register',
 			content_type='application/json',
 			data=json.dumps(dict(username=username, email=email)))
 
@@ -264,7 +265,7 @@ class TestAuthBlueprint(BaseTestCase):
 
 		# login user
 		login_res = self.client.post(
-			'/api/v2/auth/login',
+			f'{URL_AUTH}login',
 			data=json.dumps(
 				dict(
 					username='lilbaby',
@@ -279,7 +280,7 @@ class TestAuthBlueprint(BaseTestCase):
 
 	def logout_user(self, token):
 		logout_res = self.client.post(
-			'/api/v2/auth/logout',
+			f'{URL_AUTH}logout',
 			headers=dict(
 				Authorization=f'Bearer {token}'
 			)
