@@ -1,6 +1,5 @@
-from flask import abort, jsonify, make_response, url_for
-from app import app
-from app.models import Book
+from flask import abort, jsonify, make_response
+
 
 
 def check_admin(user):

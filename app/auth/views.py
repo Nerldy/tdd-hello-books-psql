@@ -1,10 +1,8 @@
-from flask import Blueprint, request, abort, make_response
+from flask import Blueprint, request
 from flask.views import MethodView
-from app.models import User, Book, BlacklistToken
+from app.models import User, BlacklistToken
 from app.auth.helper_funcs import response, response_auth, token_required, format_inputs
-from sqlalchemy import exc
 from cerberus import Validator
-from app import db
 import re
 
 auth = Blueprint('auth', __name__)

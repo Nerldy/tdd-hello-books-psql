@@ -1,6 +1,6 @@
 from flask import Blueprint, request, abort, make_response, jsonify
 from app.auth.helper_funcs import token_required, format_inputs
-from app.models import Book, User
+from app.models import Book
 from app.books.helper_funcs import check_admin, response, response_for_book, response_for_created_book, get_user_book_list, get_paginated_list
 from cerberus import Validator
 

@@ -1,7 +1,7 @@
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from app import app, db
-from app.models import User
+from app.models import User, BorrowedBook, Book
 import getpass
 from app.auth.helper_funcs import format_inputs
 import re
@@ -72,6 +72,36 @@ def super_duper_user():
 			db.session.commit()
 			return print('user downgraded')
 		return print('You did not press 1 or 2')
+
+
+@manager.command
+def return_user_book():
+	"""admin can return user book"""
+	user_email = input('Enter user\'s email: ')
+	book_id = int(input('Enter book id: '))
+
+	try:
+
+		find_user = User.get_by_email(user_email)
+		book_return = BorrowedBook.query.filter(
+			db.and_(
+				BorrowedBook.book_id == book_id,
+				BorrowedBook.user_id == find_user.id,
+				BorrowedBook.return_date == None
+			)).first()
+
+		if book_return is None:
+			return print('book not found')
+		else:
+			book_borrowed = Book.query.filter_by(id=book_id).first()
+			if book_borrowed.is_borrowed:
+				book_borrowed.is_borrowed = False
+				book_return.return_date = db.func.current_timestamp()
+				db.session.commit()
+				return print('Book has been returned')
+
+	except Exception as e:
+		print(f"error: {e}")
 
 
 # Run the manager
