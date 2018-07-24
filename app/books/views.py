@@ -46,8 +46,7 @@ books = Blueprint('books', __name__)
 
 
 @books.route('')
-@token_required
-def api_get_all_books(current_user):
+def api_get_all_books():
 	"""
 	retrieve all books in the database
 	:return:
