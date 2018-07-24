@@ -69,6 +69,9 @@ class RegisterUser(MethodView):
 			request.json['username'] = format_inputs(request.json.get('username'))
 			post_data = request.get_json()
 
+			if post_data.get('username').isalnum() is False:
+				return response('error', 'username can only have numbers and letters', 400)
+
 			if validate_user_schema.validate(post_data):
 				username = post_data.get('username')
 				email = post_data.get('email')
