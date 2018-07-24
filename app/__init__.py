@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+CORS(app)
 
 
 # error handlers
@@ -42,7 +43,6 @@ app.config.from_object(app_settings)
 
 # Initialize Flask Sql Alchemy
 db = SQLAlchemy(app)
-
 
 # Import the application views
 from app import views
