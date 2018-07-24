@@ -1,9 +1,11 @@
 import os
 from flask import Flask, jsonify, redirect
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+CORS(app)
 
 
 # error handlers
