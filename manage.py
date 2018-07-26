@@ -5,6 +5,9 @@ from app.models import User, BorrowedBook, Book
 import getpass
 from app.auth.helper_funcs import format_inputs
 import re
+from faker import Faker
+
+fake = Faker()
 
 # Initializing the manager
 manager = Manager(app)
@@ -102,6 +105,17 @@ def return_user_book():
 
 	except Exception as e:
 		print(f"error: {e}")
+
+
+@manager.command
+def dummy():
+	"""creates 100 fake books and saves them in the database"""
+	for i in range(100):
+		book = Book(
+			title=fake.name(),
+			isbn=fake.isbn10(separator='')
+		)
+		book.save()
 
 
 # Run the manager
