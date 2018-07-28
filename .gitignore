@@ -4,6 +4,11 @@
 venv/
 .vscode
 
+# Python cache
+__pycache__
+.pyc
+.vscode
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
