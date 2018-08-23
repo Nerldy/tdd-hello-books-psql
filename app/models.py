@@ -41,7 +41,8 @@ class Book(db.Model):
 			'title': self.title,
 			'isbn': self.isbn,
 			"date_created": self.date_created,
-			"date_modified": self.date_modified
+			"date_modified": self.date_modified,
+			"is_borrowed": self.is_borrowed
 		}
 
 	def __repr__(self):
