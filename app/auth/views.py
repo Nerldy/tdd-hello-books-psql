@@ -22,7 +22,7 @@ user_schema = {
 	'username': {
 		'type': 'string',
 		'required': True,
-		'minlength': 2,
+		'minlength': 1,
 		'maxlength': 50
 	},
 	'email': {
@@ -32,7 +32,8 @@ user_schema = {
 	},
 	'password': {
 		'type': 'string',
-		'required': True
+		'required': True,
+		'minlength': 8
 	},
 	'confirm_password': {
 		'type': 'string',
@@ -82,11 +83,6 @@ class RegisterUser(MethodView):
 				validate_email = re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
 				if validate_email is None:
 					return response('error', "email format must have a local part, the “@” symbol, and the domain", 400)
-
-				# validate if password matches the standard
-				validate_password = re.match(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$", password)
-				if validate_password is None:
-					return response('error', "password must have eight characters, at least one letter, one number and one special character", 400)
 
 				# confirm password match
 				if password != confirm_password:
