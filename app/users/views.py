@@ -47,6 +47,8 @@ def api_books_not_returned_or_history(current_user):
 		if validate_pagination_schema.validate(req_args) and req_args.get('returned') == 'false':
 			try:
 				borrowed_books = None
+				page_limit = req_args.get('limit', None, int)
+				page_number = req_args.get('page', None, int)
 
 				# if username in args check if it's admin
 				if 'user_id' in req_args:
@@ -68,25 +70,28 @@ def api_books_not_returned_or_history(current_user):
 							BorrowedBook.return_date == None,
 							BorrowedBook.user_id == current_user.id
 						)
-					).all()
+					).paginate(per_page=page_limit, page=page_number)
 
 				books_list = []
 
 				# match all the books borrowed ID's to the books table
-				for single_book in borrowed_books:
+				for single_book in borrowed_books.items:
 					match_book = Book.query.filter_by(id=single_book.book_id).first()
 					books_list.append(match_book)
 
-				# serialize the results
-				book_results = get_user_book_list(books_list)
-
 				# check if book_results is empty return 204
-				if len(book_results) < 1:
+				if len(books_list) < 1:
 					return make_response(jsonify({'': ''})), 204
 
 				return make_response(
 					jsonify({
-						"books": book_results
+						"books": [book.serialize() for book in books_list],
+						"has_next": borrowed_books.has_next,
+						"has_prev": borrowed_books.has_prev,
+						"next_page_num": borrowed_books.next_num,
+						"prev_page_num": borrowed_books.prev_num,
+						"total_pages": borrowed_books.pages,
+						"current_page": borrowed_books.page
 					})
 				)
 			except Exception as e:
@@ -114,19 +119,25 @@ def api_books_not_returned_or_history(current_user):
 			books_list = []
 
 			for single_book in borrowed_books:
-				print(single_book)
 				match_book = Book.query.filter_by(id=single_book.book_id).first()
-				books_list.append(match_book)
-
-			book_results = get_user_book_list(books_list)
+				book_data = None
+				if match_book:
+					book_data = {
+						'id': match_book.id,
+						'title': match_book.title,
+						'isbn': match_book.isbn,
+						'borrow_date': single_book.borrow_date,
+						'return_date': single_book.return_date
+					}
+					books_list.append(book_data)
 
 			# check if book_results is empty return 204
-			if len(book_results) < 1:
+			if len(books_list) < 1:
 				return make_response(jsonify({'': ''})), 204
 
 			return make_response(
 				jsonify({
-					"books": book_results
+					"books": books_list
 				})
 			)
 		except Exception as e:
