@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app.models import User, BlacklistToken
 from app.auth.helper_funcs import response, response_auth, token_required, format_inputs
@@ -50,7 +50,8 @@ reset_password_schema = {
 	'new_password': {
 
 		'type': 'string',
-		'required': True
+		'required': True,
+		'minlength': 8
 	}
 }
 
@@ -121,7 +122,12 @@ class LoginUser(MethodView):
 				user = User.query.filter(User.username == username).first()
 
 				if user and user.verify_password(password):
-					return response_auth('success', 'successfully logged in', user.generate_token(user.id), 200)
+					return make_response(jsonify({
+						'status': 'success',
+						'message': 'successfully logged in',
+						'auth_token': user.generate_token(user.id).decode("utf-8"),
+						"is_admin": user.is_admin
+					})), 200
 				return response('error', "user doesn't exist or password is incorrect or username and email do not match", 401)
 
 			return response('error', validate_login_schema.errors, 401)
@@ -162,11 +168,6 @@ def reset_password(current_user):
 
 			if old_password == new_password:
 				return response('error', 'old password cannot be the same as new password', 406)
-
-			# validate if new_password matches the standard
-			validate_password = re.match(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$", new_password)
-			if validate_password is None:
-				return response('error', "new password must have eight characters, at least one letter, one number and one special character", 400)
 
 			# check if old password match. If they do, update password
 			if current_user.verify_password(old_password):
