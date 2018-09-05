@@ -68,43 +68,46 @@ class RegisterUser(MethodView):
 
 		if request.content_type == 'application/json':
 
-			post_data = request.get_json()
+			try:
+				post_data = request.get_json()
 
-			if validate_user_schema.validate(post_data):
+				if validate_user_schema.validate(post_data):
 
-				if post_data.get('username').isalnum() is False:
-					return response('error', 'username can only have numbers and letters', 400)
+					if post_data.get('username').isalnum() is False:
+						return response('error', 'username can only have numbers and letters', 400)
 
-				username = format_inputs(request.json.get('username'))
-				email = post_data.get('email')
-				password = post_data.get('password')
-				confirm_password = post_data.get('confirm_password')
+					username = format_inputs(request.json.get('username'))
+					email = post_data.get('email')
+					password = post_data.get('password')
+					confirm_password = post_data.get('confirm_password')
 
-				# validate if email matches the standard
-				validate_email = re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
-				if validate_email is None:
-					return response('error', "email format must have a local part, the “@” symbol, and the domain", 400)
+					# validate if email matches the standard
+					validate_email = re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
+					if validate_email is None:
+						return response('error', "email format must have a local part, the “@” symbol, and the domain", 400)
 
-				# confirm password match
-				if password != confirm_password:
-					return response('error', 'password don\'t match', 400)
+					# confirm password match
+					if password != confirm_password:
+						return response('error', 'password don\'t match', 400)
 
-				user = User.get_by_email(email)
+					user = User.get_by_email(email)
 
-				if not user:
-					new_user = User(
-						username=username,
-						password=password,
-						email=email
-					)
-					# create token
-					token = new_user.save()
+					if not user:
+						new_user = User(
+							username=username,
+							password=password,
+							email=email
+						)
+						# create token
+						token = new_user.save()
 
-					return response_auth('success', 'successfully registered', token, 201)
-				else:
-					return response('error', 'user already exists, please sign in', 400)
+						return response_auth('success', 'successfully registered', token, 201)
+					else:
+						return response('error', 'user already exists, please sign in', 400)
 
-			return response('error', validate_user_schema.errors, 400)
+				return response('error', validate_user_schema.errors, 400)
+			except Exception as e:
+				return response('error', 'username already exists', 400)
 		return response('error', 'content-type must be json format', 400)
 
 
