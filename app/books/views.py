@@ -46,7 +46,8 @@ books = Blueprint('books', __name__)
 
 
 @books.route('')
-def api_get_all_books():
+@token_required
+def api_get_all_books(current_user):
 	"""
 	retrieve all books in the database
 	:return:
@@ -65,14 +66,18 @@ def api_get_all_books():
 
 				# make sure both limit and page are integers
 				if isinstance(page_number, int) and isinstance(page_limit, int):
+					bookPaginate = Book.query.paginate(per_page=page_limit, page=page_number)
 					return make_response(
 						jsonify(
-							get_paginated_list(
-								get_user_book_list(Book.get_all()),
-								'/api/v2/books',
-								start=page_number,
-								limit=page_limit
-							)
+							{
+								"books": [booka.serialize() for booka in bookPaginate.items],
+								"has_next": bookPaginate.has_next,
+								"has_prev": bookPaginate.has_prev,
+								"next_page_num": bookPaginate.next_num,
+								"prev_page_num": bookPaginate.prev_num,
+								"total_pages": bookPaginate.pages,
+								"current_page": bookPaginate.page
+							}
 						)
 					)
 

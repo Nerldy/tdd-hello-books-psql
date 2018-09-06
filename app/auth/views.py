@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 from app.models import User, BlacklistToken
 from app.auth.helper_funcs import response, response_auth, token_required, format_inputs
@@ -22,7 +22,7 @@ user_schema = {
 	'username': {
 		'type': 'string',
 		'required': True,
-		'minlength': 2,
+		'minlength': 1,
 		'maxlength': 50
 	},
 	'email': {
@@ -32,7 +32,8 @@ user_schema = {
 	},
 	'password': {
 		'type': 'string',
-		'required': True
+		'required': True,
+		'minlength': 8
 	},
 	'confirm_password': {
 		'type': 'string',
@@ -49,7 +50,8 @@ reset_password_schema = {
 	'new_password': {
 
 		'type': 'string',
-		'required': True
+		'required': True,
+		'minlength': 8
 	}
 }
 
@@ -66,48 +68,46 @@ class RegisterUser(MethodView):
 
 		if request.content_type == 'application/json':
 
-			post_data = request.get_json()
+			try:
+				post_data = request.get_json()
 
-			if validate_user_schema.validate(post_data):
+				if validate_user_schema.validate(post_data):
 
-				if post_data.get('username').isalnum() is False:
-					return response('error', 'username can only have numbers and letters', 400)
+					if post_data.get('username').isalnum() is False:
+						return response('error', 'username can only have numbers and letters', 400)
 
-				username = format_inputs(request.json.get('username'))
-				email = post_data.get('email')
-				password = post_data.get('password')
-				confirm_password = post_data.get('confirm_password')
+					username = format_inputs(request.json.get('username'))
+					email = post_data.get('email')
+					password = post_data.get('password')
+					confirm_password = post_data.get('confirm_password')
 
-				# validate if email matches the standard
-				validate_email = re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
-				if validate_email is None:
-					return response('error', "email format must have a local part, the “@” symbol, and the domain", 400)
+					# validate if email matches the standard
+					validate_email = re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email)
+					if validate_email is None:
+						return response('error', "email format must have a local part, the “@” symbol, and the domain", 400)
 
-				# validate if password matches the standard
-				validate_password = re.match(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$", password)
-				if validate_password is None:
-					return response('error', "password must have eight characters, at least one letter, one number and one special character", 400)
+					# confirm password match
+					if password != confirm_password:
+						return response('error', 'password don\'t match', 400)
 
-				# confirm password match
-				if password != confirm_password:
-					return response('error', 'password don\'t match', 400)
+					user = User.get_by_email(email)
 
-				user = User.get_by_email(email)
+					if not user:
+						new_user = User(
+							username=username,
+							password=password,
+							email=email
+						)
+						# create token
+						token = new_user.save()
 
-				if not user:
-					new_user = User(
-						username=username,
-						password=password,
-						email=email
-					)
-					# create token
-					token = new_user.save()
+						return response_auth('success', 'successfully registered', token, 201)
+					else:
+						return response('error', 'user already exists, please sign in', 400)
 
-					return response_auth('success', 'successfully registered', token, 201)
-				else:
-					return response('error', 'user already exists, please sign in', 400)
-
-			return response('error', validate_user_schema.errors, 400)
+				return response('error', validate_user_schema.errors, 400)
+			except Exception as e:
+				return response('error', 'username already exists', 400)
 		return response('error', 'content-type must be json format', 400)
 
 
@@ -125,7 +125,12 @@ class LoginUser(MethodView):
 				user = User.query.filter(User.username == username).first()
 
 				if user and user.verify_password(password):
-					return response_auth('success', 'successfully logged in', user.generate_token(user.id), 200)
+					return make_response(jsonify({
+						'status': 'success',
+						'message': 'successfully logged in',
+						'auth_token': user.generate_token(user.id).decode("utf-8"),
+						"is_admin": user.is_admin
+					})), 200
 				return response('error', "user doesn't exist or password is incorrect or username and email do not match", 401)
 
 			return response('error', validate_login_schema.errors, 401)
@@ -166,11 +171,6 @@ def reset_password(current_user):
 
 			if old_password == new_password:
 				return response('error', 'old password cannot be the same as new password', 406)
-
-			# validate if new_password matches the standard
-			validate_password = re.match(r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$", new_password)
-			if validate_password is None:
-				return response('error', "new password must have eight characters, at least one letter, one number and one special character", 400)
 
 			# check if old password match. If they do, update password
 			if current_user.verify_password(old_password):

@@ -412,9 +412,10 @@ class TestBookMethods(BaseTestCase):
 			headers=dict(Authorization=f'Bearer {token}'))
 
 		pagination = json.loads(res.data.decode())
-		self.assertTrue(pagination['count'] == 1)
-		self.assertTrue(pagination['limit'] == 1)
-		self.assertTrue(pagination['start'] == 1)
+		self.assertTrue(pagination['current_page'] == 1)
+		self.assertTrue(pagination['has_next'] == False)
+		self.assertTrue(pagination['has_prev'] == False)
+		self.assertTrue(pagination['total_pages'] == 1)
 
 	def test_delete_book(self):
 		"""test api can delete book with id"""
