@@ -1,7 +1,6 @@
 from flask import abort, jsonify, make_response
 
 
-
 def check_admin(user):
 	"""
 	Prevent non-admins from accessing the page
