@@ -112,7 +112,7 @@ def dummy():
 	"""creates 100 fake books and saves them in the database"""
 	for i in range(100):
 		book = Book(
-			title=fake.name(),
+			title=fake.company(),
 			isbn=fake.isbn10(separator='')
 		)
 		book.save()
